@@ -77,17 +77,7 @@ export default function Index() {
         <h1 className="text-lg font-semibold tracking-tight">Course Discovery</h1>
       </header>
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
-        {activeContact && (
-          <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2">
-            <UserCheck className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Saving for:</span>
-            <Badge variant="secondary">{activeContact.student_name}</Badge>
-            <span className="text-xs text-muted-foreground">{activeContact.mobile}</span>
-            <Button variant="ghost" size="icon" className="ml-auto h-6 w-6" onClick={clearContact}>
-              <X className="h-3 w-3" />
-            </Button>
-          </div>
-        )}
+        <StudentDetailsBar />
         <SearchFilters onSearch={handleSearch} loading={loading} />
         <div className="flex-1">
           <ResultsTable
