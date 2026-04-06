@@ -1,29 +1,49 @@
 
 
-# Fix: jaseel2022@gmail.com Login
+# Convert Search Wizard to Top Filter Bar
 
-## Problem
-The `jaseel2022@gmail.com` account was created via Supabase's `/invite` endpoint (visible in auth logs), not via `admin.createUser` with a password. This means:
-1. No password was set for the account
-2. The edge function's error handling skipped the role assignment since the user "already" existed
-3. Result: user exists but can't log in and has no admin role
+## What changes
+Replace the current side-by-side layout (280px sidebar wizard + results table) with a single-page layout: a collapsible horizontal filter panel at the top, results table below it filling the rest of the page.
 
-## Solution
-Update the `create-admin` edge function to handle existing users properly:
+## Layout
 
-### Changes to `supabase/functions/create-admin/index.ts`
-- For all three users, when `createUser` fails with "already registered":
-  - Use `admin.listUsers()` or query `auth.users` to find the existing user by email
-  - Use `admin.updateUserById()` to set/reset the password
-  - Upsert the role into `user_roles` using the found user ID
-- This ensures existing users get their password set and role assigned
-
-### Technical detail
-Replace the current pattern:
-```typescript
-if (adminError && !adminError.message.includes("already")) { ... }
-const adminId = adminUser?.user?.id;
-if (adminId) { /* upsert role */ }
+```text
+┌──────────────────────────────────────────────┐
+│  Header: Course Discovery                    │
+├──────────────────────────────────────────────┤
+│  Filter Bar (collapsible)                    │
+│  ┌─────────┬──────────┬──────────┬─────────┐ │
+│  │Study Lvl│ Marks    │ IELTS   │Countries│ │
+│  │ Select  │ Inputs   │ Input   │ Badges  │ │
+│  ├─────────┴──────────┴──────────┴─────────┤ │
+│  │ Domains (badges)  │Duration│Type│MaxFee │ │
+│  ├─────────────────────────────────────────-┤ │
+│  │              [Search Courses]            │ │
+│  └──────────────────────────────────────────┘ │
+├──────────────────────────────────────────────┤
+│  Results Table (full width, scrollable)      │
+│                                              │
+└──────────────────────────────────────────────┘
 ```
-With a pattern that falls back to looking up the user when they already exist, then updates their password and assigns the role regardless.
+
+## Technical details
+
+### 1. Rewrite `SearchWizard.tsx` as `SearchFilters.tsx`
+- Remove the 3-step wizard; show all fields at once in a horizontal/grid layout
+- Study Level: a `Select` dropdown
+- Academic fields shown/hidden dynamically based on study level (same logic)
+- All inputs arranged in a responsive grid (e.g. `grid-cols-2 md:grid-cols-4 lg:grid-cols-6`)
+- Countries and Domains: badge toggles in flex-wrap rows
+- Duration, Course Type, Max Fee: inline selects/inputs
+- Single "Search Courses" button
+- Wrap in a collapsible card so users can collapse filters after searching
+
+### 2. Update `Index.tsx` layout
+- Remove the side-by-side flex layout
+- Render `SearchFilters` at the top (full width)
+- Render `ResultsTable` below (full width, flex-1 with overflow scroll)
+
+### Files modified
+- `src/components/SearchWizard.tsx` — rewrite to single-panel filter layout (rename export)
+- `src/pages/Index.tsx` — change from side-by-side to stacked vertical layout
 
