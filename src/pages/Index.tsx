@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { SearchWizard } from '@/components/SearchWizard';
+import { SearchFilters } from '@/components/SearchFilters';
 import { ResultsTable } from '@/components/ResultsTable';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useToast } from '@/hooks/use-toast';
