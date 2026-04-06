@@ -1,15 +1,29 @@
 
 
-# Create Admin Account: jaseel2022@gmail.com
+# Fix: jaseel2022@gmail.com Login
 
-## What we'll do
-Update the `create-admin` edge function to also create an admin user with `jaseel2022@gmail.com` / `Admin@12345`, then invoke it.
+## Problem
+The `jaseel2022@gmail.com` account was created via Supabase's `/invite` endpoint (visible in auth logs), not via `admin.createUser` with a password. This means:
+1. No password was set for the account
+2. The edge function's error handling skipped the role assignment since the user "already" existed
+3. Result: user exists but can't log in and has no admin role
 
-## Technical details
+## Solution
+Update the `create-admin` edge function to handle existing users properly:
 
-### 1. Update `supabase/functions/create-admin/index.ts`
-Add a third user creation block for `jaseel2022@gmail.com` with password `Admin@12345`, email auto-confirmed, and assign the `admin` role in `user_roles`.
+### Changes to `supabase/functions/create-admin/index.ts`
+- For all three users, when `createUser` fails with "already registered":
+  - Use `admin.listUsers()` or query `auth.users` to find the existing user by email
+  - Use `admin.updateUserById()` to set/reset the password
+  - Upsert the role into `user_roles` using the found user ID
+- This ensures existing users get their password set and role assigned
 
-### 2. Deploy and invoke the function
-Call the edge function to create the account so you can log in immediately.
+### Technical detail
+Replace the current pattern:
+```typescript
+if (adminError && !adminError.message.includes("already")) { ... }
+const adminId = adminUser?.user?.id;
+if (adminId) { /* upsert role */ }
+```
+With a pattern that falls back to looking up the user when they already exist, then updates their password and assigns the role regardless.
 
