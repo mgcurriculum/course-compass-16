@@ -11,6 +11,7 @@ Deno.serve(async (req) => {
     { email: "admin@sacdms.com", password: "Admin@12345", role: "admin" },
     { email: "counselor@sacdms.com", password: "Counselor@123", role: "counselor" },
     { email: "jaseel2022@gmail.com", password: "Admin@12345", role: "admin" },
+    { email: "admin@edroots.com", password: "Admin@12345", role: "admin" },
   ];
 
   const results: Record<string, any> = {};
