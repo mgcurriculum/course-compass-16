@@ -1,42 +1,46 @@
 
 
-# Session-Persistent Student Contact + Seed Dummy Courses
+# Student Details First, Then Search Filters
 
-## 1. Student contact persists per session
+## What changes
+Restructure the main page flow so student details (Name, Email, Mobile, DOB) appear as the first section at the top, with a "Skip for Now" option. Once filled (or skipped), the search filters and results show below.
 
-**Problem**: Every time a counselor clicks "Save Course", the dialog asks for student details again.
+## Layout
 
-**Solution**: Store the active student contact in React state (lifted to `Index.tsx` or a context). After the first save, skip the dialog and directly save subsequent courses using the stored contact ID. Clear on logout.
+```text
+┌──────────────────────────────────────────────┐
+│  Header: Course Discovery                    │
+├──────────────────────────────────────────────┤
+│  Student Details Card (collapsible)          │
+│  ┌────────┬──────────┬──────────┬──────────┐ │
+│  │ Name   │ Mobile   │ Email    │ DOB      │ │
+│  └────────┴──────────┴──────────┴──────────┘ │
+│  [Set Student]              [Skip for Now]   │
+├──────────────────────────────────────────────┤
+│  Search Filters (collapsible)                │
+├──────────────────────────────────────────────┤
+│  Results Table                               │
+└──────────────────────────────────────────────┘
+```
 
-### Changes
-- **`src/components/ResultsTable.tsx`**: Accept an optional `activeContact` prop. If set, clicking save skips the dialog and directly inserts into `saved_courses` using that contact. If not set, open the dialog as before.
-- **`src/components/StudentContactDialog.tsx`**: After successful save, return the full contact object (id, name, mobile, email) via `onSaved` callback.
-- **`src/pages/Index.tsx`**: Hold `activeContact` state. When first save completes, store the contact. Pass it to `ResultsTable`. Show a small indicator bar ("Saving for: Student Name — Change") so the counselor knows which student is active and can switch.
-- **`src/pages/CourseDetail.tsx`**: Same pattern — accept `activeContact` via a shared context or prop.
-- Optionally create a lightweight `StudentContactContext` so both Index and CourseDetail share the active contact without prop drilling. Context clears on logout (listen to auth state).
+## Technical details
 
-## 2. Seed 20+ dummy courses across multiple universities
+### 1. Create `src/components/StudentDetailsBar.tsx`
+- A collapsible card (similar style to SearchFilters) with 4 fields in a grid: Student Name, Mobile, Email, DOB
+- Mobile field does a lookup on blur (reuse existing logic from StudentContactDialog) — if contact exists, auto-fills name/email/DOB
+- Two buttons: "Set Student" (upserts to `student_contacts` and sets active contact in context) and "Skip for Now" (collapses the card, leaves no active contact)
+- When `activeContact` is already set, show a summary bar instead (name, mobile) with a "Change" button
+- On "Set Student", the card collapses and shows the summary bar
 
-Insert sample data via the database insert tool covering multiple study levels (Bachelor's, Master's, Diploma), countries (UK, US, Canada, Australia), and domains (CS, Business, Engineering, Data Science). Include:
-- 6-8 universities across different countries
-- 20-30 courses spread across those universities
-- Eligibility rules for each course
-- Academic cycles (intakes) for each course
+### 2. Update `src/pages/Index.tsx`
+- Render `StudentDetailsBar` above `SearchFilters`
+- Remove the existing `activeContact` indicator bar (it moves into `StudentDetailsBar`)
+- When saving courses, if contact was skipped, the existing `StudentContactDialog` still triggers; if contact is set, saves directly (existing behavior)
 
-This ensures searches return meaningful results regardless of filter combination.
+### 3. Update `src/components/ResultsTable.tsx`
+- No changes needed — it already checks `activeContact` from context and either saves directly or opens the dialog
 
-## Files
-
-### Create
-- `src/contexts/StudentContactContext.tsx` — context for active student contact (persists until logout)
-
-### Modify
-- `src/pages/Index.tsx` — wrap with context provider, show active student indicator
-- `src/components/ResultsTable.tsx` — use context; skip dialog if contact active
-- `src/components/StudentContactDialog.tsx` — return full contact on save
-- `src/pages/CourseDetail.tsx` — use context for save button
-- `src/App.tsx` — wrap routes with `StudentContactProvider`
-
-### Data insert
-- Insert ~8 universities, ~25 courses, eligibility rules, and academic cycles via database insert tool
+### Files
+- **Create**: `src/components/StudentDetailsBar.tsx`
+- **Modify**: `src/pages/Index.tsx` — add StudentDetailsBar, remove inline contact indicator
 
