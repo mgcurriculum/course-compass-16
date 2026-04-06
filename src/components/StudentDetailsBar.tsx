@@ -210,7 +210,7 @@ export function StudentDetailsBar() {
                   onChange={e => setMobile(e.target.value)}
                   onBlur={() => lookupMobile(mobile)}
                 />
-                {lookingUp && <p className="text-xs text-muted-foreground">Looking up...</p>}
+                {lookingUp && <p className="text-sm text-muted-foreground">Looking up...</p>}
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="sd-name" className="text-xs text-muted-foreground">Student Name *</Label>
