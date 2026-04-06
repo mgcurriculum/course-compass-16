@@ -5,8 +5,10 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Trash2, Download, Loader2, BookmarkCheck } from 'lucide-react';
+import { Trash2, Download, Loader2, BookmarkCheck, MessageCircle, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useStudentContact } from '@/contexts/StudentContactContext';
+import { shareViaWhatsApp, shareViaEmail } from '@/lib/share-utils';
 
 interface SavedCourse {
   id: string;
