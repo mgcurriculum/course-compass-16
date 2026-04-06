@@ -1,35 +1,45 @@
 
 
-# Increase Text Size Across Course Discovery Page
+# Save Student Profile & Preferences with Contact
 
-## Problem
-Labels, placeholders, badges, and headings throughout the Student Details bar, Search Filters, and page header are using `text-xs` (12px) and `text-sm` (14px), making them hard to read.
+## Summary
+Add educational qualification, graduated year, IELTS score, work experience, preferred countries, and preferred domains fields to the `student_contacts` table. When a counselor sets a student, these preferences are saved alongside the contact info and auto-loaded when selecting an existing student.
 
-## Changes
+## Database Changes
 
-### 1. `src/components/StudentDetailsBar.tsx`
-- Section heading "Student Details": `text-sm` → `text-base font-semibold`
-- All `Label` elements: `text-xs` → `text-sm`
-- "Search existing student" label: `text-xs` → `text-sm`
-- Search input placeholder: already fine (inherits base)
-- Divider text "or enter new details": `text-xs` → `text-sm`
-- Active contact summary: name `text-sm` → `text-base`, mobile/email `text-xs` → `text-sm`
-- Button text: ensure `text-sm` minimum
-- Dropdown items: `text-sm` (already fine)
-- "Looking up..." text: `text-xs` → `text-sm`
+Add new columns to `student_contacts`:
 
-### 2. `src/components/SearchFilters.tsx`
-- Section heading "Search Filters": `text-sm` → `text-base font-semibold`
-- All `Label` elements: `text-xs` → `text-sm`
-- Badge toggles (countries/domains): `text-xs` → `text-sm`
-- Collapsed badge: `text-xs` → `text-sm`
+```sql
+ALTER TABLE student_contacts
+  ADD COLUMN educational_qualification text,
+  ADD COLUMN graduated_year integer,
+  ADD COLUMN ielts_score numeric,
+  ADD COLUMN work_experience integer DEFAULT 0,
+  ADD COLUMN preferred_countries text[] DEFAULT '{}',
+  ADD COLUMN preferred_domains text[] DEFAULT '{}';
+```
 
-### 3. `src/pages/Index.tsx`
-- Header title: `text-base` → `text-lg`
-- Header icon: `h-4 w-4` → `h-5 w-5`
+No new tables needed — extends the existing `student_contacts` table which already has RLS.
 
-### Files modified
-- `src/components/StudentDetailsBar.tsx`
-- `src/components/SearchFilters.tsx`
-- `src/pages/Index.tsx`
+## UI Changes
+
+### `src/components/StudentDetailsBar.tsx`
+- Add new form fields below the existing Name/Mobile/Email/DOB row:
+  - **Row 2**: Educational Qualification (select: 10th, 12th, Diploma, Bachelor's, Master's), Graduated Year (number input), IELTS Score (number input), Work Experience in years (number input)
+  - **Row 3**: Preferred Countries (badge toggles, same list as SearchFilters), Preferred Domains (badge toggles, same list as SearchFilters)
+- Save all new fields in the `upsert` call to `student_contacts`
+- Auto-fill these fields when looking up by mobile or selecting existing student
+- Show key preferences in the collapsed active contact summary (e.g. qualification + IELTS)
+
+### `src/contexts/StudentContactContext.tsx`
+- Extend `ActiveContact` interface to include the new fields so they're available app-wide
+
+### `src/components/SearchFilters.tsx`
+- When an active contact has preferences set, auto-populate the matching search filter fields (IELTS, work exp, countries, domains) as defaults
+
+## Files Modified
+- **Migration**: Add 6 columns to `student_contacts`
+- `src/components/StudentDetailsBar.tsx` — add preference fields, save/load logic
+- `src/contexts/StudentContactContext.tsx` — extend ActiveContact type
+- `src/components/SearchFilters.tsx` — auto-fill from active contact preferences
 
