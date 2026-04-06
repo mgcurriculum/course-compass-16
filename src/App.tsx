@@ -31,20 +31,22 @@ function ProtectedLayout() {
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <div className="flex-1 flex flex-col">
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/shortlisted" element={<Shortlisted />} />
-            <Route path="/course/:id" element={<CourseDetail />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+    <StudentContactProvider>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <div className="flex-1 flex flex-col">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/shortlisted" element={<Shortlisted />} />
+              <Route path="/course/:id" element={<CourseDetail />} />
+              <Route path="/students" element={<Students />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </StudentContactProvider>
   );
 }
 
