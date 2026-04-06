@@ -86,6 +86,8 @@ export function StudentContactDialog({ open, onOpenChange, result, onSaved }: St
       if (saveErr) throw saveErr;
 
       toast({ title: 'Course saved for ' + studentName });
+      // Set active contact so future saves skip the dialog
+      setActiveContact({ id: contact.id, student_name: studentName.trim(), mobile: mobile.trim(), email: email.trim() });
       onSaved(result.course.id, contact.id);
       onOpenChange(false);
       // Reset form
