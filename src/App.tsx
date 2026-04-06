@@ -9,6 +9,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 import Login from "./pages/Login";
 import Index from "./pages/Index";
 import Shortlisted from "./pages/Shortlisted";
+import CourseDetail from "./pages/CourseDetail";
+import Students from "./pages/Students";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -35,6 +37,8 @@ function ProtectedLayout() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/shortlisted" element={<Shortlisted />} />
+            <Route path="/course/:id" element={<CourseDetail />} />
+            <Route path="/students" element={<Students />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
