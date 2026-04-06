@@ -14,16 +14,336 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      academic_cycles: {
+        Row: {
+          application_deadline: string | null
+          course_id: string
+          created_at: string
+          id: string
+          intake_name: string
+          month: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          application_deadline?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          intake_name: string
+          month: number
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          application_deadline?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          intake_name?: string
+          month?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_cycles_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          course_type: string | null
+          created_at: string
+          currency: string
+          degree_type: string | null
+          description: string | null
+          domain: string
+          duration: string
+          id: string
+          name: string
+          study_level: string
+          tuition_fees: number
+          university_id: string
+          updated_at: string
+        }
+        Insert: {
+          course_type?: string | null
+          created_at?: string
+          currency?: string
+          degree_type?: string | null
+          description?: string | null
+          domain: string
+          duration: string
+          id?: string
+          name: string
+          study_level: string
+          tuition_fees: number
+          university_id: string
+          updated_at?: string
+        }
+        Update: {
+          course_type?: string | null
+          created_at?: string
+          currency?: string
+          degree_type?: string | null
+          description?: string | null
+          domain?: string
+          duration?: string
+          id?: string
+          name?: string
+          study_level?: string
+          tuition_fees?: number
+          university_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_university_id_fkey"
+            columns: ["university_id"]
+            isOneToOne: false
+            referencedRelation: "universities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eligibility_rules: {
+        Row: {
+          backlogs_allowed: number | null
+          course_id: string
+          created_at: string
+          id: string
+          min_10th_marks: number | null
+          min_12th_marks: number | null
+          min_graduation_marks: number | null
+          min_ielts: number | null
+          min_ielts_bands: number | null
+          min_work_experience: number | null
+          required_degree: string | null
+          updated_at: string
+        }
+        Insert: {
+          backlogs_allowed?: number | null
+          course_id: string
+          created_at?: string
+          id?: string
+          min_10th_marks?: number | null
+          min_12th_marks?: number | null
+          min_graduation_marks?: number | null
+          min_ielts?: number | null
+          min_ielts_bands?: number | null
+          min_work_experience?: number | null
+          required_degree?: string | null
+          updated_at?: string
+        }
+        Update: {
+          backlogs_allowed?: number | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          min_10th_marks?: number | null
+          min_12th_marks?: number | null
+          min_graduation_marks?: number | null
+          min_ielts?: number | null
+          min_ielts_bands?: number | null
+          min_work_experience?: number | null
+          required_degree?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eligibility_rules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: true
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_courses: {
+        Row: {
+          course_id: string
+          created_at: string
+          eligibility_status: string | null
+          id: string
+          match_score: number | null
+          student_profile_id: string | null
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          eligibility_status?: string | null
+          id?: string
+          match_score?: number | null
+          student_profile_id?: string | null
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          eligibility_status?: string | null
+          id?: string
+          match_score?: number | null
+          student_profile_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_courses_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_courses_student_profile_id_fkey"
+            columns: ["student_profile_id"]
+            isOneToOne: false
+            referencedRelation: "student_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_profiles: {
+        Row: {
+          created_at: string
+          graduation_degree: string | null
+          graduation_marks: number | null
+          id: string
+          ielts_score: number | null
+          max_tuition_fee: number | null
+          preferred_countries: string[] | null
+          preferred_course_type: string | null
+          preferred_domains: string[] | null
+          preferred_duration: string | null
+          student_name: string
+          study_level: string
+          tenth_marks: number | null
+          twelfth_english_marks: number | null
+          twelfth_marks: number | null
+          updated_at: string
+          user_id: string
+          work_experience: number | null
+        }
+        Insert: {
+          created_at?: string
+          graduation_degree?: string | null
+          graduation_marks?: number | null
+          id?: string
+          ielts_score?: number | null
+          max_tuition_fee?: number | null
+          preferred_countries?: string[] | null
+          preferred_course_type?: string | null
+          preferred_domains?: string[] | null
+          preferred_duration?: string | null
+          student_name: string
+          study_level: string
+          tenth_marks?: number | null
+          twelfth_english_marks?: number | null
+          twelfth_marks?: number | null
+          updated_at?: string
+          user_id: string
+          work_experience?: number | null
+        }
+        Update: {
+          created_at?: string
+          graduation_degree?: string | null
+          graduation_marks?: number | null
+          id?: string
+          ielts_score?: number | null
+          max_tuition_fee?: number | null
+          preferred_countries?: string[] | null
+          preferred_course_type?: string | null
+          preferred_domains?: string[] | null
+          preferred_duration?: string | null
+          student_name?: string
+          study_level?: string
+          tenth_marks?: number | null
+          twelfth_english_marks?: number | null
+          twelfth_marks?: number | null
+          updated_at?: string
+          user_id?: string
+          work_experience?: number | null
+        }
+        Relationships: []
+      }
+      universities: {
+        Row: {
+          city: string
+          country: string
+          created_at: string
+          id: string
+          name: string
+          partner_status: boolean
+          ranking: number | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          city: string
+          country: string
+          created_at?: string
+          id?: string
+          name: string
+          partner_status?: boolean
+          ranking?: number | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          city?: string
+          country?: string
+          created_at?: string
+          id?: string
+          name?: string
+          partner_status?: boolean
+          ranking?: number | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "counselor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +470,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "counselor"],
+    },
   },
 } as const
