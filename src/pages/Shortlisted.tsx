@@ -32,6 +32,7 @@ interface SavedCourse {
 export default function Shortlisted() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { activeContact } = useStudentContact();
   const [items, setItems] = useState<SavedCourse[]>([]);
   const [loading, setLoading] = useState(true);
 
