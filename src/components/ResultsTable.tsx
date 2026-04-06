@@ -80,9 +80,30 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
     return 'bg-destructive';
   };
 
-  const handleSaveClick = (result: MatchResult) => {
-    setSelectedResult(result);
-    setDialogOpen(true);
+  const handleSaveClick = async (result: MatchResult) => {
+    if (activeContact && user) {
+      // Direct save — skip dialog
+      setSavingId(result.course.id);
+      try {
+        const { error } = await supabase.from('saved_courses').insert({
+          user_id: user.id,
+          course_id: result.course.id,
+          match_score: result.matchScore,
+          eligibility_status: result.eligibilityStatus,
+          student_contact_id: activeContact.id,
+        });
+        if (error) throw error;
+        toast({ title: 'Course saved for ' + activeContact.student_name });
+        onCourseSaved(result.course.id, activeContact.id);
+      } catch (err: any) {
+        toast({ title: 'Save failed', description: err.message, variant: 'destructive' });
+      } finally {
+        setSavingId(null);
+      }
+    } else {
+      setSelectedResult(result);
+      setDialogOpen(true);
+    }
   };
 
   if (results.length === 0) {
