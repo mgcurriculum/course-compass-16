@@ -1,96 +1,42 @@
 
 
-# Course Detail Page, Student Profiles & UI Modernization
+# Session-Persistent Student Contact + Seed Dummy Courses
 
-## Summary
-Add a course detail page, student contact capture on save, student profile search, new filter fields, and modernize the UI across the app.
+## 1. Student contact persists per session
 
-## Database Changes
+**Problem**: Every time a counselor clicks "Save Course", the dialog asks for student details again.
 
-### 1. New `student_contacts` table
-Stores student info captured when saving a course. Mobile number is the unique identifier.
+**Solution**: Store the active student contact in React state (lifted to `Index.tsx` or a context). After the first save, skip the dialog and directly save subsequent courses using the stored contact ID. Clear on logout.
 
-```sql
-CREATE TABLE public.student_contacts (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL,
-  student_name text NOT NULL,
-  mobile text NOT NULL UNIQUE,
-  email text NOT NULL,
-  dob date,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
+### Changes
+- **`src/components/ResultsTable.tsx`**: Accept an optional `activeContact` prop. If set, clicking save skips the dialog and directly inserts into `saved_courses` using that contact. If not set, open the dialog as before.
+- **`src/components/StudentContactDialog.tsx`**: After successful save, return the full contact object (id, name, mobile, email) via `onSaved` callback.
+- **`src/pages/Index.tsx`**: Hold `activeContact` state. When first save completes, store the contact. Pass it to `ResultsTable`. Show a small indicator bar ("Saving for: Student Name — Change") so the counselor knows which student is active and can switch.
+- **`src/pages/CourseDetail.tsx`**: Same pattern — accept `activeContact` via a shared context or prop.
+- Optionally create a lightweight `StudentContactContext` so both Index and CourseDetail share the active contact without prop drilling. Context clears on logout (listen to auth state).
 
-ALTER TABLE public.student_contacts ENABLE ROW LEVEL SECURITY;
--- RLS: authenticated users can CRUD their own, admins can view all
-```
+## 2. Seed 20+ dummy courses across multiple universities
 
-### 2. Modify `saved_courses` table
-Add `student_contact_id` (FK to `student_contacts`) so each saved course is linked to a student contact.
+Insert sample data via the database insert tool covering multiple study levels (Bachelor's, Master's, Diploma), countries (UK, US, Canada, Australia), and domains (CS, Business, Engineering, Data Science). Include:
+- 6-8 universities across different countries
+- 20-30 courses spread across those universities
+- Eligibility rules for each course
+- Academic cycles (intakes) for each course
 
-### 3. Add `brochure_url` and `website` columns to `courses` table
-- `brochure_url text` — link to downloadable brochure PDF
-- University `website` column already exists on `universities` table
+This ensures searches return meaningful results regardless of filter combination.
 
-## New Pages & Components
+## Files
 
-### 4. Course Detail Page (`/course/:id`)
-- Full-page view of a single course with all details
-- Sections: Overview, Eligibility Requirements, Intakes/Deadlines, University Info
-- Show university website link (clickable, opens in new tab)
-- "Download Brochure" button (links to `brochure_url` if available, disabled otherwise)
-- "Save Course" button that triggers the student contact dialog
-- Add route in `App.tsx`
+### Create
+- `src/contexts/StudentContactContext.tsx` — context for active student contact (persists until logout)
 
-### 5. Student Contact Dialog (Modal)
-When user clicks "Save/Shortlist" on a course (from results table or detail page):
-- Modal asks for: Student Name, Mobile Number, Email, Date of Birth
-- If mobile number already exists in `student_contacts`, auto-fill the rest
-- On submit: upsert into `student_contacts`, then insert into `saved_courses` with `student_contact_id`
-- This replaces the current direct-save behavior
+### Modify
+- `src/pages/Index.tsx` — wrap with context provider, show active student indicator
+- `src/components/ResultsTable.tsx` — use context; skip dialog if contact active
+- `src/components/StudentContactDialog.tsx` — return full contact on save
+- `src/pages/CourseDetail.tsx` — use context for save button
+- `src/App.tsx` — wrap routes with `StudentContactProvider`
 
-### 6. Student Profiles Page (`/students`)
-- Searchable list of all student contacts (search by name, mobile, email)
-- Click a student to see their profile + all saved courses
-- Add to sidebar navigation
-- Admin/counselor accessible
-
-## Filter Enhancements
-
-### 7. Add to `SearchFilters.tsx`
-- **Years of Experience**: number input (already exists as "Work Exp" for Master's, but make it always visible)
-- **Date of Birth**: date picker input (stored on student contact, used for age-based filtering if needed)
-
-## UI Modernization
-
-### 8. Visual refresh across components
-- **SearchFilters**: Add subtle gradients on the card header, use rounded-xl cards, softer shadows (`shadow-sm`), pill-shaped badges for countries/domains, smoother transitions
-- **ResultsTable**: Add hover row highlights, subtle alternating row colors, rounded avatar-style university initials, progress-bar style match score instead of plain text, card-style on mobile
-- **Header**: Gradient accent bar or subtle brand color strip
-- **Buttons**: Use gradient primary buttons, rounded-lg
-- **Overall**: Increase spacing, use `tracking-tight` on headings, add `transition-all` on interactive elements
-- **Login page**: Modernize with a side illustration or gradient panel
-
-## Technical Details
-
-### Files to create
-- `src/pages/CourseDetail.tsx` — course detail page
-- `src/components/StudentContactDialog.tsx` — modal for capturing student info
-- `src/pages/Students.tsx` — student profiles list + detail view
-
-### Files to modify
-- `src/App.tsx` — add routes for `/course/:id` and `/students`
-- `src/components/AppSidebar.tsx` — add Students nav item
-- `src/components/ResultsTable.tsx` — add "View" link to course detail, modernize styling, change save to open dialog
-- `src/components/SearchFilters.tsx` — add experience + DOB fields, modernize styling
-- `src/pages/Index.tsx` — pass dialog handler, modernize layout
-- `src/pages/Shortlisted.tsx` — modernize styling
-- `src/pages/Login.tsx` — modernize layout
-- `src/index.css` — refined color tokens, subtle gradients
-
-### Migration
-- Create `student_contacts` table with RLS
-- Add `student_contact_id` to `saved_courses`
-- Add `brochure_url` to `courses`
+### Data insert
+- Insert ~8 universities, ~25 courses, eligibility rules, and academic cycles via database insert tool
 
