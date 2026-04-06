@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Search, Users, ArrowLeft, Loader2, Phone, Mail, Calendar, MessageCircle, Send } from 'lucide-react';
-import { shareViaWhatsApp, shareViaEmail } from '@/lib/share-utils';
+import { Search, Users, ArrowLeft, Loader2, Phone, Mail, Calendar, Copy, Send } from 'lucide-react';
+import { copyForWhatsApp, shareViaEmail } from '@/lib/share-utils';
+import { toast } from 'sonner';
 import { format } from 'date-fns';
 
 interface StudentContact {
@@ -115,12 +116,15 @@ export default function Students() {
                     size="sm"
                     variant="outline"
                     className="text-green-600 border-green-200 hover:bg-green-50"
-                    onClick={() => shareViaWhatsApp(
-                      selectedContact,
-                      savedCourses.map(sc => ({ ...sc.course, match_score: sc.match_score, eligibility_status: sc.eligibility_status }))
-                    )}
+                    onClick={async () => {
+                      await copyForWhatsApp(
+                        selectedContact,
+                        savedCourses.map(sc => ({ ...sc.course, match_score: sc.match_score, eligibility_status: sc.eligibility_status }))
+                      );
+                      toast.success('Copied to clipboard — paste in WhatsApp');
+                    }}
                   >
-                    <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
+                    <Copy className="mr-1.5 h-4 w-4" /> Copy for WhatsApp
                   </Button>
                   <Button
                     size="sm"

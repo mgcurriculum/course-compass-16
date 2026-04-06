@@ -5,10 +5,11 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Trash2, Download, Loader2, BookmarkCheck, MessageCircle, Send } from 'lucide-react';
+import { Trash2, Download, Loader2, BookmarkCheck, Copy, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStudentContact } from '@/contexts/StudentContactContext';
-import { shareViaWhatsApp, shareViaEmail } from '@/lib/share-utils';
+import { copyForWhatsApp, shareViaEmail } from '@/lib/share-utils';
+import { toast as sonnerToast } from 'sonner';
 
 interface SavedCourse {
   id: string;
@@ -143,16 +144,17 @@ export default function Shortlisted() {
                   size="sm"
                   variant="outline"
                   className="shadow-sm text-green-600 border-green-200 hover:bg-green-50"
-                  onClick={() => {
+                  onClick={async () => {
                     const courses = items.map(i => ({
                       ...i.course,
                       match_score: i.match_score,
                       eligibility_status: i.eligibility_status,
                     }));
-                    shareViaWhatsApp(activeContact, courses);
+                    await copyForWhatsApp(activeContact, courses);
+                    sonnerToast.success('Copied to clipboard — paste in WhatsApp');
                   }}
                 >
-                  <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> WhatsApp
+                  <Copy className="mr-1.5 h-3.5 w-3.5" /> Copy for WhatsApp
                 </Button>
                 <Button
                   size="sm"
