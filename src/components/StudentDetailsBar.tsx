@@ -133,9 +133,9 @@ export function StudentDetailsBar() {
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
             <UserCheck className="h-3.5 w-3.5 text-primary" />
           </div>
-          <span className="text-sm font-medium text-foreground">{activeContact.student_name}</span>
-          <span className="text-xs text-muted-foreground">{activeContact.mobile}</span>
-          <span className="text-xs text-muted-foreground hidden sm:inline">{activeContact.email}</span>
+          <span className="text-base font-medium text-foreground">{activeContact.student_name}</span>
+          <span className="text-sm text-muted-foreground">{activeContact.mobile}</span>
+          <span className="text-sm text-muted-foreground hidden sm:inline">{activeContact.email}</span>
           <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-foreground" onClick={handleChange}>
             Change
           </Button>
