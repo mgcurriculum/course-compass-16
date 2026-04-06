@@ -42,7 +42,7 @@ function ProtectedLayout() {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/shortlisted" element={<Shortlisted />} />
+              
               <Route path="/course/:id" element={<CourseDetail />} />
               <Route path="/students" element={<Students />} />
               <Route path="/universities" element={<Universities />} />

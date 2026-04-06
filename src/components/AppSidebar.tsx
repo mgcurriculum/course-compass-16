@@ -19,7 +19,6 @@ import { Button } from '@/components/ui/button';
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: BarChart3 },
   { title: 'Course Search', url: '/', icon: Search },
-  { title: 'Shortlisted', url: '/shortlisted', icon: BookmarkCheck },
   { title: 'Students', url: '/students', icon: Users },
 ];
 
