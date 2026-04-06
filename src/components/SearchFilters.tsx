@@ -68,12 +68,12 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <Card>
+      <Card className="rounded-xl shadow-sm overflow-hidden">
         <CollapsibleTrigger asChild>
-          <button className="flex w-full items-center justify-between px-6 py-3 text-left">
+          <button className="flex w-full items-center justify-between bg-gradient-to-r from-primary/5 to-transparent px-6 py-3 text-left transition-colors hover:from-primary/10">
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-semibold">Search Filters</span>
+              <Filter className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold tracking-tight">Search Filters</span>
               {!open && studyLevel && (
                 <Badge variant="secondary" className="ml-2 text-xs">{studyLevel}</Badge>
               )}
@@ -84,12 +84,12 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
         <CollapsibleContent>
           <CardContent className="space-y-4 pt-0">
-            {/* Row 1: Study Level + Academic Fields + IELTS */}
+            {/* Row 1: Study Level + Academic Fields + IELTS + Experience */}
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
               <div className="space-y-1.5">
-                <Label className="text-xs">Study Level</Label>
+                <Label className="text-xs font-medium">Study Level</Label>
                 <Select value={studyLevel} onValueChange={setStudyLevel}>
-                  <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
+                  <SelectTrigger className="rounded-lg"><SelectValue placeholder="Select level" /></SelectTrigger>
                   <SelectContent>
                     {STUDY_LEVELS.map(l => (
                       <SelectItem key={l} value={l}>{l}</SelectItem>
@@ -100,27 +100,27 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {needsDiploma && (
                 <div className="space-y-1.5">
-                  <Label className="text-xs">10th Marks (%)</Label>
-                  <Input type="number" min="0" max="100" value={tenthMarks} onChange={e => setTenthMarks(e.target.value)} placeholder="e.g. 75" />
+                  <Label className="text-xs font-medium">10th Marks (%)</Label>
+                  <Input className="rounded-lg" type="number" min="0" max="100" value={tenthMarks} onChange={e => setTenthMarks(e.target.value)} placeholder="e.g. 75" />
                 </div>
               )}
 
               {(needsDiploma && studyLevel === 'Advanced Diploma') && (
                 <div className="space-y-1.5">
-                  <Label className="text-xs">12th Marks (%)</Label>
-                  <Input type="number" min="0" max="100" value={twelfthMarks} onChange={e => setTwelfthMarks(e.target.value)} placeholder="e.g. 70" />
+                  <Label className="text-xs font-medium">12th Marks (%)</Label>
+                  <Input className="rounded-lg" type="number" min="0" max="100" value={twelfthMarks} onChange={e => setTwelfthMarks(e.target.value)} placeholder="e.g. 70" />
                 </div>
               )}
 
               {needsBachelors && (
                 <>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">+2 Overall (%)</Label>
-                    <Input type="number" min="0" max="100" value={twelfthMarks} onChange={e => setTwelfthMarks(e.target.value)} placeholder="e.g. 78" />
+                    <Label className="text-xs font-medium">+2 Overall (%)</Label>
+                    <Input className="rounded-lg" type="number" min="0" max="100" value={twelfthMarks} onChange={e => setTwelfthMarks(e.target.value)} placeholder="e.g. 78" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">+2 English</Label>
-                    <Input type="number" min="0" max="100" value={twelfthEnglishMarks} onChange={e => setTwelfthEnglishMarks(e.target.value)} placeholder="e.g. 65" />
+                    <Label className="text-xs font-medium">+2 English</Label>
+                    <Input className="rounded-lg" type="number" min="0" max="100" value={twelfthEnglishMarks} onChange={e => setTwelfthEnglishMarks(e.target.value)} placeholder="e.g. 65" />
                   </div>
                 </>
               )}
@@ -128,35 +128,36 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
               {needsMasters && (
                 <>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Grad Degree</Label>
-                    <Input value={graduationDegree} onChange={e => setGraduationDegree(e.target.value)} placeholder="e.g. CS" />
+                    <Label className="text-xs font-medium">Grad Degree</Label>
+                    <Input className="rounded-lg" value={graduationDegree} onChange={e => setGraduationDegree(e.target.value)} placeholder="e.g. CS" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Grad Marks (%)</Label>
-                    <Input type="number" min="0" max="100" value={graduationMarks} onChange={e => setGraduationMarks(e.target.value)} placeholder="e.g. 72" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">Work Exp (yrs)</Label>
-                    <Input type="number" min="0" value={workExperience} onChange={e => setWorkExperience(e.target.value)} placeholder="e.g. 2" />
+                    <Label className="text-xs font-medium">Grad Marks (%)</Label>
+                    <Input className="rounded-lg" type="number" min="0" max="100" value={graduationMarks} onChange={e => setGraduationMarks(e.target.value)} placeholder="e.g. 72" />
                   </div>
                 </>
               )}
 
               <div className="space-y-1.5">
-                <Label className="text-xs">IELTS Score</Label>
-                <Input type="number" min="0" max="9" step="0.5" value={ieltsScore} onChange={e => setIeltsScore(e.target.value)} placeholder="e.g. 7.0" />
+                <Label className="text-xs font-medium">IELTS Score</Label>
+                <Input className="rounded-lg" type="number" min="0" max="9" step="0.5" value={ieltsScore} onChange={e => setIeltsScore(e.target.value)} placeholder="e.g. 7.0" />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">Work Exp (yrs)</Label>
+                <Input className="rounded-lg" type="number" min="0" value={workExperience} onChange={e => setWorkExperience(e.target.value)} placeholder="e.g. 2" />
               </div>
             </div>
 
             {/* Row 2: Countries */}
             <div className="space-y-1.5">
-              <Label className="text-xs">Preferred Countries</Label>
+              <Label className="text-xs font-medium">Preferred Countries</Label>
               <div className="flex flex-wrap gap-1.5">
                 {COUNTRIES.map(c => (
                   <Badge
                     key={c}
                     variant={preferredCountries.includes(c) ? 'default' : 'outline'}
-                    className="cursor-pointer text-xs"
+                    className="cursor-pointer rounded-full text-xs transition-all hover:shadow-sm"
                     onClick={() => toggleCountry(c)}
                   >
                     {c}
@@ -167,13 +168,13 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
             {/* Row 3: Domains */}
             <div className="space-y-1.5">
-              <Label className="text-xs">Preferred Domains</Label>
+              <Label className="text-xs font-medium">Preferred Domains</Label>
               <div className="flex flex-wrap gap-1.5">
                 {DOMAINS.map(d => (
                   <Badge
                     key={d}
                     variant={preferredDomains.includes(d) ? 'default' : 'outline'}
-                    className="cursor-pointer text-xs"
+                    className="cursor-pointer rounded-full text-xs transition-all hover:shadow-sm"
                     onClick={() => toggleDomain(d)}
                   >
                     {d}
@@ -185,9 +186,9 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
             {/* Row 4: Duration, Type, Max Fee, Search */}
             <div className="flex flex-wrap items-end gap-3">
               <div className="w-36 space-y-1.5">
-                <Label className="text-xs">Duration</Label>
+                <Label className="text-xs font-medium">Duration</Label>
                 <Select value={preferredDuration} onValueChange={setPreferredDuration}>
-                  <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
+                  <SelectTrigger className="rounded-lg"><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1 year">1 year</SelectItem>
                     <SelectItem value="2 years">2 years</SelectItem>
@@ -197,9 +198,9 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
                 </Select>
               </div>
               <div className="w-36 space-y-1.5">
-                <Label className="text-xs">Course Type</Label>
+                <Label className="text-xs font-medium">Course Type</Label>
                 <Select value={preferredCourseType} onValueChange={setPreferredCourseType}>
-                  <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
+                  <SelectTrigger className="rounded-lg"><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Full-time">Full-time</SelectItem>
                     <SelectItem value="Part-time">Part-time</SelectItem>
@@ -207,10 +208,10 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
                 </Select>
               </div>
               <div className="w-40 space-y-1.5">
-                <Label className="text-xs">Max Tuition (USD)</Label>
-                <Input type="number" min="0" value={maxTuitionFee} onChange={e => setMaxTuitionFee(e.target.value)} placeholder="e.g. 50000" />
+                <Label className="text-xs font-medium">Max Tuition (USD)</Label>
+                <Input className="rounded-lg" type="number" min="0" value={maxTuitionFee} onChange={e => setMaxTuitionFee(e.target.value)} placeholder="e.g. 50000" />
               </div>
-              <Button onClick={handleSearch} disabled={loading || !studyLevel} className="ml-auto">
+              <Button onClick={handleSearch} disabled={loading || !studyLevel} className="ml-auto rounded-lg bg-gradient-to-r from-primary to-primary/90 shadow-sm transition-all hover:shadow-md">
                 <Search className="mr-1.5 h-4 w-4" />
                 {loading ? 'Searching...' : 'Search Courses'}
               </Button>

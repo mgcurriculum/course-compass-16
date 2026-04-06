@@ -1,4 +1,4 @@
-import { Search, BookmarkCheck, LogOut, GraduationCap } from 'lucide-react';
+import { Search, BookmarkCheck, Users, LogOut, GraduationCap } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 const navItems = [
   { title: 'Course Search', url: '/', icon: Search },
   { title: 'Shortlisted', url: '/shortlisted', icon: BookmarkCheck },
+  { title: 'Students', url: '/students', icon: Users },
 ];
 
 export function AppSidebar() {

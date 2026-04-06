@@ -57,6 +57,7 @@ export type Database = {
       }
       courses: {
         Row: {
+          brochure_url: string | null
           course_type: string | null
           created_at: string
           currency: string
@@ -72,6 +73,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          brochure_url?: string | null
           course_type?: string | null
           created_at?: string
           currency?: string
@@ -87,6 +89,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          brochure_url?: string | null
           course_type?: string | null
           created_at?: string
           currency?: string
@@ -171,6 +174,7 @@ export type Database = {
           eligibility_status: string | null
           id: string
           match_score: number | null
+          student_contact_id: string | null
           student_profile_id: string | null
           user_id: string
         }
@@ -180,6 +184,7 @@ export type Database = {
           eligibility_status?: string | null
           id?: string
           match_score?: number | null
+          student_contact_id?: string | null
           student_profile_id?: string | null
           user_id: string
         }
@@ -189,6 +194,7 @@ export type Database = {
           eligibility_status?: string | null
           id?: string
           match_score?: number | null
+          student_contact_id?: string | null
           student_profile_id?: string | null
           user_id?: string
         }
@@ -201,6 +207,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "saved_courses_student_contact_id_fkey"
+            columns: ["student_contact_id"]
+            isOneToOne: false
+            referencedRelation: "student_contacts"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "saved_courses_student_profile_id_fkey"
             columns: ["student_profile_id"]
             isOneToOne: false
@@ -208,6 +221,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      student_contacts: {
+        Row: {
+          created_at: string
+          dob: string | null
+          email: string
+          id: string
+          mobile: string
+          student_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dob?: string | null
+          email: string
+          id?: string
+          mobile: string
+          student_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dob?: string | null
+          email?: string
+          id?: string
+          mobile?: string
+          student_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       student_profiles: {
         Row: {

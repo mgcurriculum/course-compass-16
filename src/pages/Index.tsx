@@ -14,7 +14,6 @@ export default function Index() {
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
 
-  // Fetch saved course IDs
   useEffect(() => {
     if (!user) return;
     supabase
@@ -29,7 +28,6 @@ export default function Index() {
   const handleSearch = async (input: StudentInput) => {
     setLoading(true);
     try {
-      // Fetch courses with related data
       const { data: courses, error } = await supabase
         .from('courses')
         .select(`
@@ -67,35 +65,15 @@ export default function Index() {
     }
   };
 
-  const handleToggleSave = async (result: MatchResult) => {
-    if (!user) return;
-    const courseId = result.course.id;
-
-    if (savedIds.has(courseId)) {
-      await supabase
-        .from('saved_courses')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('course_id', courseId);
-      setSavedIds(prev => { const n = new Set(prev); n.delete(courseId); return n; });
-      toast({ title: 'Removed from shortlist' });
-    } else {
-      await supabase.from('saved_courses').insert({
-        user_id: user.id,
-        course_id: courseId,
-        match_score: result.matchScore,
-        eligibility_status: result.eligibilityStatus,
-      });
-      setSavedIds(prev => new Set(prev).add(courseId));
-      toast({ title: 'Added to shortlist' });
-    }
+  const handleCourseSaved = (courseId: string, _contactId: string) => {
+    setSavedIds(prev => new Set(prev).add(courseId));
   };
 
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex h-14 items-center border-b bg-card px-4">
         <SidebarTrigger className="mr-3" />
-        <h1 className="text-lg font-semibold">Course Discovery</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Course Discovery</h1>
       </header>
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
         <SearchFilters onSearch={handleSearch} loading={loading} />
@@ -103,7 +81,7 @@ export default function Index() {
           <ResultsTable
             results={results}
             savedCourseIds={savedIds}
-            onToggleSave={handleToggleSave}
+            onCourseSaved={handleCourseSaved}
           />
         </div>
       </div>
