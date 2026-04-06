@@ -22,17 +22,17 @@
     --muted: 215 20% 95%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 215 20% 95%;
+    --accent: 215 25% 93%;
     --accent-foreground: 220 30% 15%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
     --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
@@ -85,7 +85,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
