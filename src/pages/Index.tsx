@@ -97,11 +97,9 @@ export default function Index() {
         <SidebarTrigger className="mr-3" />
         <h1 className="text-lg font-semibold">Course Discovery</h1>
       </header>
-      <div className="flex flex-1 gap-6 overflow-hidden p-6">
-        <div className="w-80 shrink-0 overflow-y-auto">
-          <SearchWizard onSearch={handleSearch} loading={loading} />
-        </div>
-        <div className="flex-1 overflow-y-auto">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
+        <SearchFilters onSearch={handleSearch} loading={loading} />
+        <div className="flex-1">
           <ResultsTable
             results={results}
             savedCourseIds={savedIds}
