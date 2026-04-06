@@ -12,6 +12,9 @@ import Index from "./pages/Index";
 import Shortlisted from "./pages/Shortlisted";
 import CourseDetail from "./pages/CourseDetail";
 import Students from "./pages/Students";
+import Dashboard from "./pages/Dashboard";
+import Universities from "./pages/Universities";
+import Courses from "./pages/Courses";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
