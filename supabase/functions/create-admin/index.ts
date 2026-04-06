@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
     { email: "jaseel2022@gmail.com", password: "Admin@12345", role: "admin" },
   ];
 
-  const results: Record<string, string | null> = {};
+  const results: Record<string, any> = {};
 
   for (const u of users) {
     let userId: string | null = null;
@@ -27,26 +27,33 @@ Deno.serve(async (req) => {
 
     if (data?.user) {
       userId = data.user.id;
+      results[u.email] = { status: "created", id: userId };
     } else if (error) {
-      // User already exists — find and update password
+      // User already exists — find them
       const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
       const existing = listData?.users?.find((x: any) => x.email === u.email);
       if (existing) {
         userId = existing.id;
+        
+        // Delete and recreate to ensure clean state
+        await supabaseAdmin.auth.admin.deleteUser(userId);
+        
+        const { data: newData, error: newErr } = await supabaseAdmin.auth.admin.createUser({
+          email: u.email,
+          password: u.password,
+          email_confirm: true,
+        });
+        
+        if (newData?.user) {
+          userId = newData.user.id;
+          results[u.email] = { status: "recreated", id: userId };
+        } else {
+          results[u.email] = { status: "recreate_error", error: newErr?.message };
+          continue;
+        }
       } else {
-        results[u.email] = `error: could not find existing user - ${error.message}`;
+        results[u.email] = { status: "not_found", error: error.message };
         continue;
-      }
-    }
-
-    if (userId) {
-      // Always update password and confirm email
-      const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-        password: u.password,
-        email_confirm: true,
-      });
-      if (updateErr) {
-        results[u.email] = `update error: ${updateErr.message}`;
       }
     }
 
@@ -56,7 +63,6 @@ Deno.serve(async (req) => {
         { onConflict: "user_id,role" }
       );
     }
-    results[u.email] = userId;
   }
 
   return new Response(JSON.stringify({ success: true, results }), {
