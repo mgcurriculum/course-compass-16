@@ -161,7 +161,7 @@ export function StudentDetailsBar() {
             {/* Search existing */}
             {contacts.length > 0 && (
               <div className="relative">
-                <Label className="text-xs text-muted-foreground mb-1.5 block">Search existing student</Label>
+                <Label className="text-sm text-muted-foreground mb-1.5 block">Search existing student</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
