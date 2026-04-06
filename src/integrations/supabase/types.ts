@@ -226,32 +226,50 @@ export type Database = {
         Row: {
           created_at: string
           dob: string | null
+          educational_qualification: string | null
           email: string
+          graduated_year: number | null
           id: string
+          ielts_score: number | null
           mobile: string
+          preferred_countries: string[] | null
+          preferred_domains: string[] | null
           student_name: string
           updated_at: string
           user_id: string
+          work_experience: number | null
         }
         Insert: {
           created_at?: string
           dob?: string | null
+          educational_qualification?: string | null
           email: string
+          graduated_year?: number | null
           id?: string
+          ielts_score?: number | null
           mobile: string
+          preferred_countries?: string[] | null
+          preferred_domains?: string[] | null
           student_name: string
           updated_at?: string
           user_id: string
+          work_experience?: number | null
         }
         Update: {
           created_at?: string
           dob?: string | null
+          educational_qualification?: string | null
           email?: string
+          graduated_year?: number | null
           id?: string
+          ielts_score?: number | null
           mobile?: string
+          preferred_countries?: string[] | null
+          preferred_domains?: string[] | null
           student_name?: string
           updated_at?: string
           user_id?: string
+          work_experience?: number | null
         }
         Relationships: []
       }
