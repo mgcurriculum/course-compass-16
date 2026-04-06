@@ -1,24 +1,22 @@
 
 
-# Remove Lovable Branding — Replace with Edroots International
+# Create admin@edroots.com Admin Account
 
-## Problem
-The OG image URLs point to Lovable's CDN (`pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev`), and the default `favicon.ico` is Lovable's favicon. These need to be replaced with Edroots branding.
+## Summary
+Add `admin@edroots.com` with password `Admin@12345` and admin role to the create-admin edge function, then invoke it.
 
 ## Changes
 
-### 1. `index.html`
-- Remove the OG image and Twitter image meta tags (they point to Lovable screenshot CDN). Can be re-added later when the user provides a custom OG image.
-- Add a favicon link pointing to a new SVG favicon with Edroots branding (globe icon in teal, matching the app's sidebar logo)
+### `supabase/functions/create-admin/index.ts`
+- Add `{ email: "admin@edroots.com", password: "Admin@12345", role: "admin" }` to the users array (line 13)
 
-### 2. `public/favicon.ico`
-- Delete the existing Lovable favicon
+### After deploy
+- Invoke the edge function to create the account
 
-### 3. `public/favicon.svg`
-- Create a simple SVG favicon — a teal globe icon matching the Edroots brand color
+### Memory
+- Update `mem://reference/test-accounts` with the new credential
 
-### Files
-- **Delete**: `public/favicon.ico`
-- **Create**: `public/favicon.svg`
-- **Modify**: `index.html`
+## Files
+- **Modify**: `supabase/functions/create-admin/index.ts`
+- **Update**: `.lovable/memory/reference/test-accounts.md`
 
