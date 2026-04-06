@@ -4,8 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Progress } from '@/components/ui/progress';
-import { BookmarkPlus, BookmarkCheck, ChevronUp, ChevronDown, Info, Eye } from 'lucide-react';
+import { BookmarkPlus, BookmarkCheck, ChevronUp, ChevronDown, Info, Eye, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useStudentContact } from '@/contexts/StudentContactContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { StudentContactDialog } from '@/components/StudentContactDialog';
 import type { MatchResult } from '@/lib/matching-engine';
 
