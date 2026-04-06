@@ -5,6 +5,10 @@ import { SearchFilters } from '@/components/SearchFilters';
 import { ResultsTable } from '@/components/ResultsTable';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useToast } from '@/hooks/use-toast';
+import { useStudentContact } from '@/contexts/StudentContactContext';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { UserCheck, X } from 'lucide-react';
 import { matchCourses, type StudentInput, type CourseWithDetails, type MatchResult } from '@/lib/matching-engine';
 
 export default function Index() {
