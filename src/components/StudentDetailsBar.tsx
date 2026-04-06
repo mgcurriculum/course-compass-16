@@ -213,7 +213,7 @@ export function StudentDetailsBar() {
                 {lookingUp && <p className="text-sm text-muted-foreground">Looking up...</p>}
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sd-name" className="text-xs text-muted-foreground">Student Name *</Label>
+                <Label htmlFor="sd-name" className="text-sm text-muted-foreground">Student Name *</Label>
                 <Input id="sd-name" placeholder="Full name" value={studentName} onChange={e => setStudentName(e.target.value)} />
               </div>
               <div className="space-y-1.5">
