@@ -1,7 +1,7 @@
 # Project Memory
 
 ## Core
-Study abroad course discovery system (SACDMS). Clean professional blue/gray theme.
+Edroots International — Study Abroad course discovery platform. Teal/emerald brand (primary 195 85% 35%).
 Lovable Cloud backend with RLS. Admin/Counselor roles via user_roles table.
 No public signup — admin creates users only.
 

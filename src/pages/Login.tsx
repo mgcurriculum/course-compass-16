@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, Loader2, Globe, BookOpen, Users } from 'lucide-react';
+import { Globe, Loader2, BookOpen, Users, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Login() {
@@ -38,74 +38,75 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left panel - branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary/90 to-primary/70 items-center justify-center p-12">
-        <div className="max-w-md text-primary-foreground space-y-8">
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[hsl(195,85%,30%)] via-[hsl(195,80%,35%)] to-[hsl(200,70%,40%)] items-center justify-center p-16">
+        <div className="max-w-sm text-primary-foreground space-y-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-foreground/20 backdrop-blur">
-              <GraduationCap className="h-7 w-7" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-foreground/15 backdrop-blur-sm">
+              <Globe className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">SACDMS</h1>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">Edroots International</h1>
+              <p className="text-xs text-primary-foreground/60 -mt-0.5">Study Abroad Platform</p>
+            </div>
           </div>
           <h2 className="text-3xl font-bold tracking-tight leading-tight">
-            Study Abroad Course Discovery & Management
+            Your Gateway to<br />Global Education
           </h2>
-          <p className="text-primary-foreground/80 text-lg">
-            Intelligent course matching, centralized management, and seamless student tracking.
+          <p className="text-primary-foreground/70 text-base leading-relaxed">
+            Intelligent course matching, centralized management, and seamless student tracking — all in one place.
           </p>
-          <div className="space-y-4 pt-4">
-            <div className="flex items-center gap-3">
-              <Globe className="h-5 w-5 text-primary-foreground/70" />
-              <span className="text-sm text-primary-foreground/80">350+ Universities Worldwide</span>
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center gap-3 text-primary-foreground/70">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span className="text-sm">350+ Universities Worldwide</span>
             </div>
-            <div className="flex items-center gap-3">
-              <BookOpen className="h-5 w-5 text-primary-foreground/70" />
-              <span className="text-sm text-primary-foreground/80">5,000+ Courses & Growing</span>
+            <div className="flex items-center gap-3 text-primary-foreground/70">
+              <BookOpen className="h-4 w-4 shrink-0" />
+              <span className="text-sm">5,000+ Courses & Growing</span>
             </div>
-            <div className="flex items-center gap-3">
-              <Users className="h-5 w-5 text-primary-foreground/70" />
-              <span className="text-sm text-primary-foreground/80">Built for Counselors & Admins</span>
+            <div className="flex items-center gap-3 text-primary-foreground/70">
+              <Users className="h-4 w-4 shrink-0" />
+              <span className="text-sm">Built for Counselors & Admins</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right panel - login */}
-      <div className="flex flex-1 items-center justify-center bg-background px-4">
-        <Card className="w-full max-w-md rounded-xl shadow-lg border-0 bg-card">
-          <CardHeader className="text-center space-y-3">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-md">
-              <GraduationCap className="h-8 w-8 text-primary-foreground" />
+      {/* Right panel */}
+      <div className="flex flex-1 items-center justify-center bg-background px-6">
+        <Card className="w-full max-w-sm border-0 shadow-xl bg-card">
+          <CardHeader className="text-center space-y-3 pb-2">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-md">
+              <Globe className="h-6 w-6 text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl tracking-tight">Welcome back</CardTitle>
-            <CardDescription>Sign in to access the platform</CardDescription>
+            <CardTitle className="text-xl tracking-tight">Welcome back</CardTitle>
+            <CardDescription className="text-muted-foreground">Sign in to your account</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="you@company.com"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="rounded-lg"
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-xs font-medium">Password</Label>
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="rounded-lg"
                   required
                 />
               </div>
-              <Button type="submit" className="w-full rounded-lg bg-gradient-to-r from-primary to-primary/90 shadow-sm transition-all hover:shadow-md" disabled={loading}>
+              <Button type="submit" className="w-full shadow-sm" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign In
               </Button>
