@@ -193,7 +193,7 @@ export function StudentDetailsBar() {
             {contacts.length > 0 && (
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-px bg-border/60" />
-                <span className="text-xs text-muted-foreground">or enter new details</span>
+                <span className="text-sm text-muted-foreground">or enter new details</span>
                 <div className="flex-1 h-px bg-border/60" />
               </div>
             )}
