@@ -33,13 +33,20 @@ Deno.serve(async (req) => {
       const existing = listData?.users?.find((x: any) => x.email === u.email);
       if (existing) {
         userId = existing.id;
-        await supabaseAdmin.auth.admin.updateUserById(userId, {
-          password: u.password,
-          email_confirm: true,
-        });
       } else {
-        results[u.email] = `error: ${error.message}`;
+        results[u.email] = `error: could not find existing user - ${error.message}`;
         continue;
+      }
+    }
+
+    if (userId) {
+      // Always update password and confirm email
+      const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+        password: u.password,
+        email_confirm: true,
+      });
+      if (updateErr) {
+        results[u.email] = `update error: ${updateErr.message}`;
       }
     }
 
