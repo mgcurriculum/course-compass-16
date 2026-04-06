@@ -24,11 +24,15 @@ type SortDir = 'asc' | 'desc';
 
 export function ResultsTable({ results, savedCourseIds, onCourseSaved }: ResultsTableProps) {
   const navigate = useNavigate();
+  const { activeContact } = useStudentContact();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [sortField, setSortField] = useState<SortField>('matchScore');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [page, setPage] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedResult, setSelectedResult] = useState<MatchResult | null>(null);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const perPage = 15;
 
   const toggleSort = (field: SortField) => {
