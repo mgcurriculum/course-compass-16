@@ -9,7 +9,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { StudentContactProvider } from "@/contexts/StudentContactContext";
 import Login from "./pages/Login";
 import Index from "./pages/Index";
-import Shortlisted from "./pages/Shortlisted";
+
 import CourseDetail from "./pages/CourseDetail";
 import Students from "./pages/Students";
 import Dashboard from "./pages/Dashboard";
