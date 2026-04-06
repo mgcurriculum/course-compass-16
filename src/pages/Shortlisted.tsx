@@ -5,8 +5,10 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Trash2, Download, Loader2, BookmarkCheck } from 'lucide-react';
+import { Trash2, Download, Loader2, BookmarkCheck, MessageCircle, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useStudentContact } from '@/contexts/StudentContactContext';
+import { shareViaWhatsApp, shareViaEmail } from '@/lib/share-utils';
 
 interface SavedCourse {
   id: string;
@@ -30,6 +32,7 @@ interface SavedCourse {
 export default function Shortlisted() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { activeContact } = useStudentContact();
   const [items, setItems] = useState<SavedCourse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -133,9 +136,45 @@ export default function Shortlisted() {
           <h1 className="text-base font-semibold tracking-tight">Shortlisted Courses</h1>
         </div>
         {items.length > 0 && (
-          <Button size="sm" variant="outline" onClick={handleExportCSV} className="shadow-sm">
-            <Download className="mr-1.5 h-3.5 w-3.5" /> Export CSV
-          </Button>
+          <div className="flex gap-2">
+            {activeContact && (
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="shadow-sm text-green-600 border-green-200 hover:bg-green-50"
+                  onClick={() => {
+                    const courses = items.map(i => ({
+                      ...i.course,
+                      match_score: i.match_score,
+                      eligibility_status: i.eligibility_status,
+                    }));
+                    shareViaWhatsApp(activeContact, courses);
+                  }}
+                >
+                  <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> WhatsApp
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="shadow-sm"
+                  onClick={() => {
+                    const courses = items.map(i => ({
+                      ...i.course,
+                      match_score: i.match_score,
+                      eligibility_status: i.eligibility_status,
+                    }));
+                    shareViaEmail(activeContact, courses);
+                  }}
+                >
+                  <Send className="mr-1.5 h-3.5 w-3.5" /> Email
+                </Button>
+              </>
+            )}
+            <Button size="sm" variant="outline" onClick={handleExportCSV} className="shadow-sm">
+              <Download className="mr-1.5 h-3.5 w-3.5" /> Export CSV
+            </Button>
+          </div>
         )}
       </header>
 

@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Search, Users, ArrowLeft, Loader2, Phone, Mail, Calendar } from 'lucide-react';
+import { Search, Users, ArrowLeft, Loader2, Phone, Mail, Calendar, MessageCircle, Send } from 'lucide-react';
+import { shareViaWhatsApp, shareViaEmail } from '@/lib/share-utils';
 import { format } from 'date-fns';
 
 interface StudentContact {
@@ -103,12 +104,35 @@ export default function Students() {
         <div className="flex-1 overflow-y-auto p-6">
           <div className="mx-auto max-w-4xl space-y-6">
             <Card className="rounded-xl shadow-sm">
-              <CardContent className="flex flex-wrap gap-6 pt-6">
+              <CardContent className="flex flex-wrap items-center gap-6 pt-6">
                 <div className="flex items-center gap-2 text-sm"><Phone className="h-4 w-4 text-muted-foreground" /> {selectedContact.mobile}</div>
                 <div className="flex items-center gap-2 text-sm"><Mail className="h-4 w-4 text-muted-foreground" /> {selectedContact.email}</div>
                 {selectedContact.dob && (
                   <div className="flex items-center gap-2 text-sm"><Calendar className="h-4 w-4 text-muted-foreground" /> {format(new Date(selectedContact.dob), 'PPP')}</div>
                 )}
+                <div className="ml-auto flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-green-600 border-green-200 hover:bg-green-50"
+                    onClick={() => shareViaWhatsApp(
+                      selectedContact,
+                      savedCourses.map(sc => ({ ...sc.course, match_score: sc.match_score, eligibility_status: sc.eligibility_status }))
+                    )}
+                  >
+                    <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => shareViaEmail(
+                      selectedContact,
+                      savedCourses.map(sc => ({ ...sc.course, match_score: sc.match_score, eligibility_status: sc.eligibility_status }))
+                    )}
+                  >
+                    <Send className="mr-1.5 h-4 w-4" /> Email
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
