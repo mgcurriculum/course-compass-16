@@ -5,16 +5,12 @@ import { SearchFilters } from '@/components/SearchFilters';
 import { ResultsTable } from '@/components/ResultsTable';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useToast } from '@/hooks/use-toast';
-import { useStudentContact } from '@/contexts/StudentContactContext';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { UserCheck, X } from 'lucide-react';
+import { StudentDetailsBar } from '@/components/StudentDetailsBar';
 import { matchCourses, type StudentInput, type CourseWithDetails, type MatchResult } from '@/lib/matching-engine';
 
 export default function Index() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { activeContact, clearContact } = useStudentContact();
   const [results, setResults] = useState<MatchResult[]>([]);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
@@ -81,17 +77,7 @@ export default function Index() {
         <h1 className="text-lg font-semibold tracking-tight">Course Discovery</h1>
       </header>
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
-        {activeContact && (
-          <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2">
-            <UserCheck className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Saving for:</span>
-            <Badge variant="secondary">{activeContact.student_name}</Badge>
-            <span className="text-xs text-muted-foreground">{activeContact.mobile}</span>
-            <Button variant="ghost" size="icon" className="ml-auto h-6 w-6" onClick={clearContact}>
-              <X className="h-3 w-3" />
-            </Button>
-          </div>
-        )}
+        <StudentDetailsBar />
         <SearchFilters onSearch={handleSearch} loading={loading} />
         <div className="flex-1">
           <ResultsTable
