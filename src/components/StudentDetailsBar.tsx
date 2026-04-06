@@ -133,9 +133,9 @@ export function StudentDetailsBar() {
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
             <UserCheck className="h-3.5 w-3.5 text-primary" />
           </div>
-          <span className="text-sm font-medium text-foreground">{activeContact.student_name}</span>
-          <span className="text-xs text-muted-foreground">{activeContact.mobile}</span>
-          <span className="text-xs text-muted-foreground hidden sm:inline">{activeContact.email}</span>
+          <span className="text-base font-medium text-foreground">{activeContact.student_name}</span>
+          <span className="text-sm text-muted-foreground">{activeContact.mobile}</span>
+          <span className="text-sm text-muted-foreground hidden sm:inline">{activeContact.email}</span>
           <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-foreground" onClick={handleChange}>
             Change
           </Button>
@@ -151,7 +151,7 @@ export function StudentDetailsBar() {
           <div className="flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-muted/30 transition-colors">
             <div className="flex items-center gap-2">
               <UserPlus className="h-4 w-4 text-primary" />
-              <span className="font-medium text-sm">Student Details</span>
+              <span className="font-semibold text-base">Student Details</span>
             </div>
             {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
           </div>
@@ -161,7 +161,7 @@ export function StudentDetailsBar() {
             {/* Search existing */}
             {contacts.length > 0 && (
               <div className="relative">
-                <Label className="text-xs text-muted-foreground mb-1.5 block">Search existing student</Label>
+                <Label className="text-sm text-muted-foreground mb-1.5 block">Search existing student</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -193,7 +193,7 @@ export function StudentDetailsBar() {
             {contacts.length > 0 && (
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-px bg-border/60" />
-                <span className="text-xs text-muted-foreground">or enter new details</span>
+                <span className="text-sm text-muted-foreground">or enter new details</span>
                 <div className="flex-1 h-px bg-border/60" />
               </div>
             )}
@@ -201,7 +201,7 @@ export function StudentDetailsBar() {
             {/* Manual entry */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="sd-mobile" className="text-xs text-muted-foreground">Mobile *</Label>
+                <Label htmlFor="sd-mobile" className="text-sm text-muted-foreground">Mobile *</Label>
                 <Input
                   id="sd-mobile"
                   type="tel"
@@ -210,18 +210,18 @@ export function StudentDetailsBar() {
                   onChange={e => setMobile(e.target.value)}
                   onBlur={() => lookupMobile(mobile)}
                 />
-                {lookingUp && <p className="text-xs text-muted-foreground">Looking up...</p>}
+                {lookingUp && <p className="text-sm text-muted-foreground">Looking up...</p>}
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sd-name" className="text-xs text-muted-foreground">Student Name *</Label>
+                <Label htmlFor="sd-name" className="text-sm text-muted-foreground">Student Name *</Label>
                 <Input id="sd-name" placeholder="Full name" value={studentName} onChange={e => setStudentName(e.target.value)} />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sd-email" className="text-xs text-muted-foreground">Email *</Label>
+                <Label htmlFor="sd-email" className="text-sm text-muted-foreground">Email *</Label>
                 <Input id="sd-email" type="email" placeholder="student@email.com" value={email} onChange={e => setEmail(e.target.value)} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Date of Birth</Label>
+                <Label className="text-sm text-muted-foreground">Date of Birth</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className={cn('w-full justify-start text-left font-normal h-10', !dob && 'text-muted-foreground')}>
