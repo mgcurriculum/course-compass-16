@@ -201,10 +201,12 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => savedCourseIds.has(result.course.id) ? null : handleSaveClick(result)}
-                      disabled={savedCourseIds.has(result.course.id)}
+                      onClick={() => !savedCourseIds.has(result.course.id) && handleSaveClick(result)}
+                      disabled={savedCourseIds.has(result.course.id) || savingId === result.course.id}
                     >
-                      {savedCourseIds.has(result.course.id) ? (
+                      {savingId === result.course.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : savedCourseIds.has(result.course.id) ? (
                         <BookmarkCheck className="h-4 w-4 text-primary" />
                       ) : (
                         <BookmarkPlus className="h-4 w-4" />
