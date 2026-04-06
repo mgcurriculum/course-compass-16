@@ -14,6 +14,7 @@ import { matchCourses, type StudentInput, type CourseWithDetails, type MatchResu
 export default function Index() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { activeContact, clearContact } = useStudentContact();
   const [results, setResults] = useState<MatchResult[]>([]);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
