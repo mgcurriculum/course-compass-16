@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Search, Users, ArrowLeft, Loader2, Phone, Mail, Calendar, MessageCircle, Send } from 'lucide-react';
-import { shareViaWhatsApp, shareViaEmail } from '@/lib/share-utils';
+import { Search, Users, ArrowLeft, Loader2, Phone, Mail, Calendar, Copy, Send } from 'lucide-react';
+import { copyForWhatsApp, shareViaEmail } from '@/lib/share-utils';
+import { toast } from 'sonner';
 import { format } from 'date-fns';
 
 interface StudentContact {

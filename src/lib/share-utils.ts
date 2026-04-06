@@ -54,10 +54,9 @@ export function buildPlainMessage(student: ShareStudent, courses: ShareCourse[])
   return buildShareMessage(student, courses).replace(/\*/g, '');
 }
 
-export function shareViaWhatsApp(student: ShareStudent, courses: ShareCourse[]) {
+export async function copyForWhatsApp(student: ShareStudent, courses: ShareCourse[]) {
   const text = buildShareMessage(student, courses);
-  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank');
+  await navigator.clipboard.writeText(text);
 }
 
 export function shareViaEmail(student: ShareStudent, courses: ShareCourse[]) {
