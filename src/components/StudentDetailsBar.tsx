@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,13 +7,21 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
-import { CalendarIcon, ChevronDown, ChevronUp, Loader2, UserCheck, UserPlus, X } from 'lucide-react';
+import { CalendarIcon, ChevronDown, ChevronUp, Loader2, Search, UserCheck, UserPlus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useStudentContact } from '@/contexts/StudentContactContext';
+
+interface StudentContact {
+  id: string;
+  student_name: string;
+  mobile: string;
+  email: string;
+  dob: string | null;
+}
 
 export function StudentDetailsBar() {
   const { user } = useAuth();
@@ -26,6 +34,39 @@ export function StudentDetailsBar() {
   const [dob, setDob] = useState<Date>();
   const [loading, setLoading] = useState(false);
   const [lookingUp, setLookingUp] = useState(false);
+
+  // Search existing students
+  const [contacts, setContacts] = useState<StudentContact[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    if (!user || !open) return;
+    supabase
+      .from('student_contacts')
+      .select('id, student_name, mobile, email, dob')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) setContacts(data);
+      });
+  }, [user, open]);
+
+  const filtered = useMemo(() => {
+    if (!searchQuery.trim()) return contacts.slice(0, 10);
+    const q = searchQuery.toLowerCase();
+    return contacts.filter(
+      c => c.student_name.toLowerCase().includes(q) || c.mobile.includes(q) || c.email.toLowerCase().includes(q)
+    ).slice(0, 10);
+  }, [contacts, searchQuery]);
+
+  const selectExisting = (c: StudentContact) => {
+    setActiveContact({ id: c.id, student_name: c.student_name, mobile: c.mobile, email: c.email });
+    setSearchQuery('');
+    setShowDropdown(false);
+    setOpen(false);
+    toast({ title: 'Student set: ' + c.student_name });
+  };
 
   const lookupMobile = async (mobileNum: string) => {
     if (mobileNum.length < 10) return;
@@ -82,6 +123,7 @@ export function StudentDetailsBar() {
     setMobile('');
     setEmail('');
     setDob(undefined);
+    setSearchQuery('');
     setOpen(true);
   };
 
@@ -114,6 +156,48 @@ export function StudentDetailsBar() {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="pt-0 pb-4 px-4 space-y-4">
+            {/* Search existing student */}
+            {contacts.length > 0 && (
+              <div className="relative">
+                <Label className="text-xs text-muted-foreground mb-1.5 block">Search existing student</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search by name, mobile, or email..."
+                    value={searchQuery}
+                    onChange={e => { setSearchQuery(e.target.value); setShowDropdown(true); }}
+                    onFocus={() => setShowDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                    className="pl-9"
+                  />
+                </div>
+                {showDropdown && filtered.length > 0 && (
+                  <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-lg max-h-48 overflow-y-auto">
+                    {filtered.map(c => (
+                      <button
+                        key={c.id}
+                        className="w-full text-left px-3 py-2 hover:bg-accent text-sm flex items-center justify-between gap-2 transition-colors"
+                        onMouseDown={() => selectExisting(c)}
+                      >
+                        <span className="font-medium truncate">{c.student_name}</span>
+                        <span className="text-xs text-muted-foreground shrink-0">{c.mobile}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Divider */}
+            {contacts.length > 0 && (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-xs text-muted-foreground">or enter new details</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+            )}
+
+            {/* Manual entry fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="sd-mobile" className="text-xs">Mobile *</Label>
