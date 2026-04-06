@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AppSidebar } from "@/components/AppSidebar";
+import { StudentContactProvider } from "@/contexts/StudentContactContext";
 import Login from "./pages/Login";
 import Index from "./pages/Index";
 import Shortlisted from "./pages/Shortlisted";
