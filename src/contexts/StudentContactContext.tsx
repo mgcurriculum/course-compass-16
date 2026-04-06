@@ -6,6 +6,12 @@ interface ActiveContact {
   student_name: string;
   mobile: string;
   email: string;
+  educational_qualification?: string;
+  graduated_year?: number;
+  ielts_score?: number;
+  work_experience?: number;
+  preferred_countries?: string[];
+  preferred_domains?: string[];
 }
 
 interface StudentContactContextType {

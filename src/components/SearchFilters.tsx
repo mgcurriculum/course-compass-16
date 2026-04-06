@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Search, ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react';
+import { useStudentContact } from '@/contexts/StudentContactContext';
 import type { StudentInput } from '@/lib/matching-engine';
 
 const STUDY_LEVELS = ['Diploma', 'Advanced Diploma', "Bachelor's", 'Postgraduate Diploma', "Master's"];
@@ -23,6 +24,7 @@ interface SearchFiltersProps {
 }
 
 export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
+  const { activeContact } = useStudentContact();
   const [open, setOpen] = useState(true);
   const [studyLevel, setStudyLevel] = useState('');
   const [tenthMarks, setTenthMarks] = useState('');
@@ -37,6 +39,15 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
   const [preferredDuration, setPreferredDuration] = useState('');
   const [preferredCourseType, setPreferredCourseType] = useState('');
   const [maxTuitionFee, setMaxTuitionFee] = useState('');
+
+  // Auto-fill from active contact preferences
+  useEffect(() => {
+    if (!activeContact) return;
+    if (activeContact.ielts_score) setIeltsScore(activeContact.ielts_score.toString());
+    if (activeContact.work_experience) setWorkExperience(activeContact.work_experience.toString());
+    if (activeContact.preferred_countries?.length) setPreferredCountries(activeContact.preferred_countries);
+    if (activeContact.preferred_domains?.length) setPreferredDomains(activeContact.preferred_domains);
+  }, [activeContact]);
 
   const toggleCountry = (c: string) =>
     setPreferredCountries(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
