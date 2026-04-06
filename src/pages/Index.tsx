@@ -75,8 +75,8 @@ export default function Index() {
     <div className="flex flex-1 flex-col">
       <header className="flex h-14 items-center border-b border-border/60 bg-card/80 backdrop-blur-sm px-4">
         <SidebarTrigger className="mr-3" />
-        <Globe className="h-4 w-4 text-primary mr-2" />
-        <h1 className="text-base font-semibold tracking-tight text-foreground">Course Discovery</h1>
+        <Globe className="h-5 w-5 text-primary mr-2" />
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">Course Discovery</h1>
       </header>
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 md:p-6">
         <StudentDetailsBar />

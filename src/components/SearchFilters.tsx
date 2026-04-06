@@ -73,9 +73,9 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
           <button className="flex w-full items-center justify-between px-5 py-3 text-left transition-colors hover:bg-muted/50">
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">Search Filters</span>
+              <span className="text-base font-semibold">Search Filters</span>
               {!open && studyLevel && (
-                <Badge variant="secondary" className="ml-2 text-xs font-normal">{studyLevel}</Badge>
+                <Badge variant="secondary" className="ml-2 text-sm font-normal">{studyLevel}</Badge>
               )}
             </div>
             {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
@@ -86,7 +86,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
           <CardContent className="space-y-4 pt-0 px-5 pb-5">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Study Level</Label>
+                <Label className="text-sm text-muted-foreground">Study Level</Label>
                 <Select value={studyLevel} onValueChange={setStudyLevel}>
                   <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
                   <SelectContent>
@@ -99,14 +99,14 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
               {needsDiploma && (
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">10th Marks (%)</Label>
+                  <Label className="text-sm text-muted-foreground">10th Marks (%)</Label>
                   <Input type="number" min="0" max="100" value={tenthMarks} onChange={e => setTenthMarks(e.target.value)} placeholder="75" />
                 </div>
               )}
 
               {(needsDiploma && studyLevel === 'Advanced Diploma') && (
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">12th Marks (%)</Label>
+                  <Label className="text-sm text-muted-foreground">12th Marks (%)</Label>
                   <Input type="number" min="0" max="100" value={twelfthMarks} onChange={e => setTwelfthMarks(e.target.value)} placeholder="70" />
                 </div>
               )}
@@ -114,11 +114,11 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
               {needsBachelors && (
                 <>
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">+2 Overall (%)</Label>
+                    <Label className="text-sm text-muted-foreground">+2 Overall (%)</Label>
                     <Input type="number" min="0" max="100" value={twelfthMarks} onChange={e => setTwelfthMarks(e.target.value)} placeholder="78" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">+2 English</Label>
+                    <Label className="text-sm text-muted-foreground">+2 English</Label>
                     <Input type="number" min="0" max="100" value={twelfthEnglishMarks} onChange={e => setTwelfthEnglishMarks(e.target.value)} placeholder="65" />
                   </div>
                 </>
@@ -127,36 +127,36 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
               {needsMasters && (
                 <>
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Grad Degree</Label>
+                    <Label className="text-sm text-muted-foreground">Grad Degree</Label>
                     <Input value={graduationDegree} onChange={e => setGraduationDegree(e.target.value)} placeholder="CS" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Grad Marks (%)</Label>
+                    <Label className="text-sm text-muted-foreground">Grad Marks (%)</Label>
                     <Input type="number" min="0" max="100" value={graduationMarks} onChange={e => setGraduationMarks(e.target.value)} placeholder="72" />
                   </div>
                 </>
               )}
 
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">IELTS Score</Label>
+                <Label className="text-sm text-muted-foreground">IELTS Score</Label>
                 <Input type="number" min="0" max="9" step="0.5" value={ieltsScore} onChange={e => setIeltsScore(e.target.value)} placeholder="7.0" />
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Work Exp (yrs)</Label>
+                <Label className="text-sm text-muted-foreground">Work Exp (yrs)</Label>
                 <Input type="number" min="0" value={workExperience} onChange={e => setWorkExperience(e.target.value)} placeholder="2" />
               </div>
             </div>
 
             {/* Countries */}
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Preferred Countries</Label>
+              <Label className="text-sm text-muted-foreground">Preferred Countries</Label>
               <div className="flex flex-wrap gap-1.5">
                 {COUNTRIES.map(c => (
                   <Badge
                     key={c}
                     variant={preferredCountries.includes(c) ? 'default' : 'outline'}
-                    className="cursor-pointer text-xs font-normal transition-all hover:shadow-sm"
+                    className="cursor-pointer text-sm font-normal transition-all hover:shadow-sm"
                     onClick={() => toggleCountry(c)}
                   >
                     {c}
@@ -167,13 +167,13 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
 
             {/* Domains */}
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Preferred Domains</Label>
+              <Label className="text-sm text-muted-foreground">Preferred Domains</Label>
               <div className="flex flex-wrap gap-1.5">
                 {DOMAINS.map(d => (
                   <Badge
                     key={d}
                     variant={preferredDomains.includes(d) ? 'default' : 'outline'}
-                    className="cursor-pointer text-xs font-normal transition-all hover:shadow-sm"
+                    className="cursor-pointer text-sm font-normal transition-all hover:shadow-sm"
                     onClick={() => toggleDomain(d)}
                   >
                     {d}
@@ -185,7 +185,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
             {/* Bottom row */}
             <div className="flex flex-wrap items-end gap-3">
               <div className="w-36 space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Duration</Label>
+                <Label className="text-sm text-muted-foreground">Duration</Label>
                 <Select value={preferredDuration} onValueChange={setPreferredDuration}>
                   <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
@@ -197,7 +197,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
                 </Select>
               </div>
               <div className="w-36 space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Course Type</Label>
+                <Label className="text-sm text-muted-foreground">Course Type</Label>
                 <Select value={preferredCourseType} onValueChange={setPreferredCourseType}>
                   <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
@@ -207,7 +207,7 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
                 </Select>
               </div>
               <div className="w-40 space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Max Tuition (USD)</Label>
+                <Label className="text-sm text-muted-foreground">Max Tuition (USD)</Label>
                 <Input type="number" min="0" value={maxTuitionFee} onChange={e => setMaxTuitionFee(e.target.value)} placeholder="50000" />
               </div>
               <Button onClick={handleSearch} disabled={loading || !studyLevel} className="ml-auto shadow-sm">

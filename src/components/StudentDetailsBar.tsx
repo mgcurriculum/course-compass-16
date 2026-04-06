@@ -221,7 +221,7 @@ export function StudentDetailsBar() {
                 <Input id="sd-email" type="email" placeholder="student@email.com" value={email} onChange={e => setEmail(e.target.value)} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Date of Birth</Label>
+                <Label className="text-sm text-muted-foreground">Date of Birth</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className={cn('w-full justify-start text-left font-normal h-10', !dob && 'text-muted-foreground')}>
