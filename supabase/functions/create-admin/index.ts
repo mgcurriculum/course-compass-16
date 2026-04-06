@@ -7,56 +7,52 @@ Deno.serve(async (req) => {
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  // Create admin user
-  const { data: adminUser, error: adminError } = await supabaseAdmin.auth.admin.createUser({
-    email: "admin@sacdms.com",
-    password: "Admin@12345",
-    email_confirm: true,
+  const users = [
+    { email: "admin@sacdms.com", password: "Admin@12345", role: "admin" },
+    { email: "counselor@sacdms.com", password: "Counselor@123", role: "counselor" },
+    { email: "jaseel2022@gmail.com", password: "Admin@12345", role: "admin" },
+  ];
+
+  const results: Record<string, string | null> = {};
+
+  for (const u of users) {
+    let userId: string | null = null;
+
+    // Try to create user
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+      email: u.email,
+      password: u.password,
+      email_confirm: true,
+    });
+
+    if (data?.user) {
+      userId = data.user.id;
+    } else if (error) {
+      // User already exists — find and update password
+      const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
+      const existing = listData?.users?.find((x: any) => x.email === u.email);
+      if (existing) {
+        userId = existing.id;
+        await supabaseAdmin.auth.admin.updateUserById(userId, {
+          password: u.password,
+          email_confirm: true,
+        });
+      } else {
+        results[u.email] = `error: ${error.message}`;
+        continue;
+      }
+    }
+
+    if (userId) {
+      await supabaseAdmin.from("user_roles").upsert(
+        { user_id: userId, role: u.role },
+        { onConflict: "user_id,role" }
+      );
+    }
+    results[u.email] = userId;
+  }
+
+  return new Response(JSON.stringify({ success: true, results }), {
+    headers: { "Content-Type": "application/json" },
   });
-
-  if (adminError && !adminError.message.includes("already")) {
-    return new Response(JSON.stringify({ error: adminError.message }), { status: 400 });
-  }
-
-  const adminId = adminUser?.user?.id;
-  if (adminId) {
-    await supabaseAdmin.from("user_roles").upsert({ user_id: adminId, role: "admin" });
-  }
-
-  // Create counselor user
-  const { data: counselorUser, error: counselorError } = await supabaseAdmin.auth.admin.createUser({
-    email: "counselor@sacdms.com",
-    password: "Counselor@123",
-    email_confirm: true,
-  });
-
-  if (counselorError && !counselorError.message.includes("already")) {
-    return new Response(JSON.stringify({ error: counselorError.message }), { status: 400 });
-  }
-
-  const counselorId = counselorUser?.user?.id;
-  if (counselorId) {
-    await supabaseAdmin.from("user_roles").upsert({ user_id: counselorId, role: "counselor" });
-  }
-
-  // Create jaseel admin user
-  const { data: jaseelUser, error: jaseelError } = await supabaseAdmin.auth.admin.createUser({
-    email: "jaseel2022@gmail.com",
-    password: "Admin@12345",
-    email_confirm: true,
-  });
-
-  if (jaseelError && !jaseelError.message.includes("already")) {
-    return new Response(JSON.stringify({ error: jaseelError.message }), { status: 400 });
-  }
-
-  const jaseelId = jaseelUser?.user?.id;
-  if (jaseelId) {
-    await supabaseAdmin.from("user_roles").upsert({ user_id: jaseelId, role: "admin" });
-  }
-
-  return new Response(
-    JSON.stringify({ success: true, admin: adminId, counselor: counselorId, jaseelAdmin: jaseelId }),
-    { headers: { "Content-Type": "application/json" } }
-  );
 });
