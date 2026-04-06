@@ -1,4 +1,4 @@
-import { Search, BookmarkCheck, Users, LogOut, Globe, BarChart3, Building2, GraduationCap } from 'lucide-react';
+import { Search, Users, LogOut, Globe, BarChart3, Building2, GraduationCap } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,7 +19,6 @@ import { Button } from '@/components/ui/button';
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: BarChart3 },
   { title: 'Course Search', url: '/', icon: Search },
-  { title: 'Shortlisted', url: '/shortlisted', icon: BookmarkCheck },
   { title: 'Students', url: '/students', icon: Users },
 ];
 

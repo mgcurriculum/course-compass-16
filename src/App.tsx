@@ -9,7 +9,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { StudentContactProvider } from "@/contexts/StudentContactContext";
 import Login from "./pages/Login";
 import Index from "./pages/Index";
-import Shortlisted from "./pages/Shortlisted";
+
 import CourseDetail from "./pages/CourseDetail";
 import Students from "./pages/Students";
 import Dashboard from "./pages/Dashboard";
@@ -42,7 +42,7 @@ function ProtectedLayout() {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/shortlisted" element={<Shortlisted />} />
+              
               <Route path="/course/:id" element={<CourseDetail />} />
               <Route path="/students" element={<Students />} />
               <Route path="/universities" element={<Universities />} />
