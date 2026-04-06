@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useStudentContact } from '@/contexts/StudentContactContext';
 import type { MatchResult } from '@/lib/matching-engine';
 
 interface StudentContactDialogProps {
