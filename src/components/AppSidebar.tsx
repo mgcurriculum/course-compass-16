@@ -1,4 +1,4 @@
-import { Search, BookmarkCheck, Users, LogOut, Globe } from 'lucide-react';
+import { Search, BookmarkCheck, Users, LogOut, Globe, BarChart3, Building2, GraduationCap } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,16 +17,22 @@ import {
 import { Button } from '@/components/ui/button';
 
 const navItems = [
+  { title: 'Dashboard', url: '/dashboard', icon: BarChart3 },
   { title: 'Course Search', url: '/', icon: Search },
   { title: 'Shortlisted', url: '/shortlisted', icon: BookmarkCheck },
   { title: 'Students', url: '/students', icon: Users },
+];
+
+const adminItems = [
+  { title: 'Universities', url: '/universities', icon: Building2 },
+  { title: 'Courses', url: '/courses', icon: GraduationCap },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const location = useLocation();
-  const { signOut, user } = useAuth();
+  const { signOut, user, userRole } = useAuth();
 
   return (
     <Sidebar collapsible="icon">
@@ -48,6 +54,21 @@ export function AppSidebar() {
           <SidebarGroupContent className="mt-2">
             <SidebarMenu>
               {navItems.map(item => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      end
+                      className="hover:bg-sidebar-accent rounded-lg transition-colors"
+                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                    >
+                      <item.icon className="mr-2 h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              {userRole === 'admin' && adminItems.map(item => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink

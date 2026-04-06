@@ -12,6 +12,9 @@ import Index from "./pages/Index";
 import Shortlisted from "./pages/Shortlisted";
 import CourseDetail from "./pages/CourseDetail";
 import Students from "./pages/Students";
+import Dashboard from "./pages/Dashboard";
+import Universities from "./pages/Universities";
+import Courses from "./pages/Courses";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -38,9 +41,12 @@ function ProtectedLayout() {
           <div className="flex-1 flex flex-col">
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/shortlisted" element={<Shortlisted />} />
               <Route path="/course/:id" element={<CourseDetail />} />
               <Route path="/students" element={<Students />} />
+              <Route path="/universities" element={<Universities />} />
+              <Route path="/courses" element={<Courses />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
