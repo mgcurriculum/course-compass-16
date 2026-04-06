@@ -1,38 +1,22 @@
 
 
-# Add Dummy Data for Students & Dashboard
+# Remove Shortlisted Courses Page
 
 ## Summary
-Insert sample student contacts with varied preferences and saved courses so the Students page and Dashboard charts are populated with meaningful data.
+Delete the Shortlisted page entirely and remove all references to it from navigation and routing.
 
-## Data to Insert
+## Changes
 
-### 15 Student Contacts
-Diverse students with varying:
-- Educational qualifications (Bachelor's, Master's, +2)
-- Graduated years (2018-2024)
-- IELTS scores (5.5-8.0)
-- Work experience (0-5 years)
-- Preferred countries (UK, US, Canada, Australia, Germany, Ireland)
-- Preferred domains (Computer Science, Business, Engineering, Data Science, etc.)
+### 1. Delete `src/pages/Shortlisted.tsx`
 
-All linked to the existing admin user_id (`49b417e1-e5b0-4479-a538-9663f256258b`) since RLS requires `user_id` match.
+### 2. `src/components/AppSidebar.tsx`
+- Remove the `{ title: 'Shortlisted', url: '/shortlisted', icon: BookmarkCheck }` entry from `navItems`
+- Remove unused `BookmarkCheck` import
 
-### 40-50 Saved Courses
-Spread across the 15 students, referencing existing course IDs, with varied:
-- Match scores (55-98%)
-- Eligibility statuses (Eligible, Borderline, Not Eligible)
+### 3. `src/App.tsx`
+- Remove `import Shortlisted` and its `<Route path="/shortlisted" ... />` line
 
-This will populate all 4 dashboard charts:
-- Country Preferences bar chart
-- Domain Preferences bar chart
-- Top Saved Courses bar chart
-- Eligibility Distribution pie chart
-
-## Approach
-- Use `psql` INSERT statements directly (we have insert access)
-- All data tied to existing user_id and course_ids
-
-## No code changes needed
-Only database inserts — no file modifications required.
+### Files
+- **Delete**: `src/pages/Shortlisted.tsx`
+- **Modify**: `src/components/AppSidebar.tsx`, `src/App.tsx`
 
