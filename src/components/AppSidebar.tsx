@@ -1,4 +1,4 @@
-import { Search, BookmarkCheck, Users, LogOut, Globe, BarChart3, Building2, GraduationCap } from 'lucide-react';
+import { Search, Users, LogOut, Globe, BarChart3, Building2, GraduationCap } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
