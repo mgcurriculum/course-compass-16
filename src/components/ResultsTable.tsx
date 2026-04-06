@@ -4,8 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Progress } from '@/components/ui/progress';
-import { BookmarkPlus, BookmarkCheck, ChevronUp, ChevronDown, Info, Eye } from 'lucide-react';
+import { BookmarkPlus, BookmarkCheck, ChevronUp, ChevronDown, Info, Eye, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useStudentContact } from '@/contexts/StudentContactContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { StudentContactDialog } from '@/components/StudentContactDialog';
 import type { MatchResult } from '@/lib/matching-engine';
 
@@ -20,11 +24,15 @@ type SortDir = 'asc' | 'desc';
 
 export function ResultsTable({ results, savedCourseIds, onCourseSaved }: ResultsTableProps) {
   const navigate = useNavigate();
+  const { activeContact } = useStudentContact();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [sortField, setSortField] = useState<SortField>('matchScore');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [page, setPage] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedResult, setSelectedResult] = useState<MatchResult | null>(null);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const perPage = 15;
 
   const toggleSort = (field: SortField) => {
@@ -72,9 +80,30 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
     return 'bg-destructive';
   };
 
-  const handleSaveClick = (result: MatchResult) => {
-    setSelectedResult(result);
-    setDialogOpen(true);
+  const handleSaveClick = async (result: MatchResult) => {
+    if (activeContact && user) {
+      // Direct save — skip dialog
+      setSavingId(result.course.id);
+      try {
+        const { error } = await supabase.from('saved_courses').insert({
+          user_id: user.id,
+          course_id: result.course.id,
+          match_score: result.matchScore,
+          eligibility_status: result.eligibilityStatus,
+          student_contact_id: activeContact.id,
+        });
+        if (error) throw error;
+        toast({ title: 'Course saved for ' + activeContact.student_name });
+        onCourseSaved(result.course.id, activeContact.id);
+      } catch (err: any) {
+        toast({ title: 'Save failed', description: err.message, variant: 'destructive' });
+      } finally {
+        setSavingId(null);
+      }
+    } else {
+      setSelectedResult(result);
+      setDialogOpen(true);
+    }
   };
 
   if (results.length === 0) {
@@ -172,10 +201,12 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => savedCourseIds.has(result.course.id) ? null : handleSaveClick(result)}
-                      disabled={savedCourseIds.has(result.course.id)}
+                      onClick={() => !savedCourseIds.has(result.course.id) && handleSaveClick(result)}
+                      disabled={savedCourseIds.has(result.course.id) || savingId === result.course.id}
                     >
-                      {savedCourseIds.has(result.course.id) ? (
+                      {savingId === result.course.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : savedCourseIds.has(result.course.id) ? (
                         <BookmarkCheck className="h-4 w-4 text-primary" />
                       ) : (
                         <BookmarkPlus className="h-4 w-4" />

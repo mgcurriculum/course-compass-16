@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { useStudentContact } from '@/contexts/StudentContactContext';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,9 +17,12 @@ export default function CourseDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const { activeContact } = useStudentContact();
   const [course, setCourse] = useState<(CourseWithDetails & { brochure_url?: string | null }) | null>(null);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -111,8 +116,27 @@ export default function CourseDetail() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button onClick={() => setDialogOpen(true)}>
-                  <BookmarkPlus className="mr-2 h-4 w-4" /> Save Course
+                <Button disabled={saving} onClick={async () => {
+                  if (activeContact && user && course) {
+                    setSaving(true);
+                    try {
+                      const { error } = await supabase.from('saved_courses').insert({
+                        user_id: user.id,
+                        course_id: course.id,
+                        student_contact_id: activeContact.id,
+                      });
+                      if (error) throw error;
+                      toast({ title: 'Course saved for ' + activeContact.student_name });
+                    } catch (err: any) {
+                      toast({ title: 'Save failed', description: err.message, variant: 'destructive' });
+                    } finally {
+                      setSaving(false);
+                    }
+                  } else {
+                    setDialogOpen(true);
+                  }
+                }}>
+                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <BookmarkPlus className="mr-2 h-4 w-4" />} Save Course
                 </Button>
                 {course.brochure_url && (
                   <Button variant="outline" asChild>

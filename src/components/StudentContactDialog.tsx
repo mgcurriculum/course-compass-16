@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useStudentContact } from '@/contexts/StudentContactContext';
 import type { MatchResult } from '@/lib/matching-engine';
 
 interface StudentContactDialogProps {
@@ -23,6 +24,7 @@ interface StudentContactDialogProps {
 export function StudentContactDialog({ open, onOpenChange, result, onSaved }: StudentContactDialogProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { setActiveContact } = useStudentContact();
   const [studentName, setStudentName] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
@@ -84,6 +86,8 @@ export function StudentContactDialog({ open, onOpenChange, result, onSaved }: St
       if (saveErr) throw saveErr;
 
       toast({ title: 'Course saved for ' + studentName });
+      // Set active contact so future saves skip the dialog
+      setActiveContact({ id: contact.id, student_name: studentName.trim(), mobile: mobile.trim(), email: email.trim() });
       onSaved(result.course.id, contact.id);
       onOpenChange(false);
       // Reset form
