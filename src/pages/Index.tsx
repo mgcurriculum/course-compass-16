@@ -7,6 +7,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useToast } from '@/hooks/use-toast';
 import { StudentDetailsBar } from '@/components/StudentDetailsBar';
 import { matchCourses, type StudentInput, type CourseWithDetails, type MatchResult } from '@/lib/matching-engine';
+import { Globe } from 'lucide-react';
 
 export default function Index() {
   const { user } = useAuth();
@@ -72,11 +73,12 @@ export default function Index() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="flex h-14 items-center border-b bg-card px-4">
+      <header className="flex h-14 items-center border-b border-border/60 bg-card/80 backdrop-blur-sm px-4">
         <SidebarTrigger className="mr-3" />
-        <h1 className="text-lg font-semibold tracking-tight">Course Discovery</h1>
+        <Globe className="h-4 w-4 text-primary mr-2" />
+        <h1 className="text-base font-semibold tracking-tight text-foreground">Course Discovery</h1>
       </header>
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 md:p-6">
         <StudentDetailsBar />
         <SearchFilters onSearch={handleSearch} loading={loading} />
         <div className="flex-1">
