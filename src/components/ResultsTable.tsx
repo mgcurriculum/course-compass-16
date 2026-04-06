@@ -66,11 +66,26 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
   const statusBadge = (status: string) => {
     switch (status) {
       case 'Eligible':
-        return <Badge className="bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] shadow-sm">✅ Eligible</Badge>;
+        return (
+          <Badge className="bg-[hsl(var(--success))]/10 text-[hsl(var(--success))] border border-[hsl(var(--success))]/20 shadow-none font-normal">
+            <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-[hsl(var(--success))]" />
+            Eligible
+          </Badge>
+        );
       case 'Borderline':
-        return <Badge className="bg-[hsl(var(--warning))] text-[hsl(var(--warning-foreground))] shadow-sm">⚠️ Borderline</Badge>;
+        return (
+          <Badge className="bg-[hsl(var(--warning))]/10 text-[hsl(var(--warning))] border border-[hsl(var(--warning))]/20 shadow-none font-normal">
+            <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-[hsl(var(--warning))]" />
+            Borderline
+          </Badge>
+        );
       default:
-        return <Badge variant="destructive" className="shadow-sm">❌ Not Eligible</Badge>;
+        return (
+          <Badge variant="destructive" className="shadow-none font-normal">
+            <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-destructive-foreground/70" />
+            Not Eligible
+          </Badge>
+        );
     }
   };
 
@@ -82,7 +97,6 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
 
   const handleSaveClick = async (result: MatchResult) => {
     if (activeContact && user) {
-      // Direct save — skip dialog
       setSavingId(result.course.id);
       try {
         const { error } = await supabase.from('saved_courses').insert({
@@ -108,9 +122,12 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
 
   if (results.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-card p-12 text-center shadow-sm">
-        <p className="text-lg font-medium text-muted-foreground">No results yet</p>
-        <p className="text-sm text-muted-foreground">Use the search filters to find matching courses</p>
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/60 bg-card p-16 text-center">
+        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
+          <Eye className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <p className="text-base font-medium text-foreground">No results yet</p>
+        <p className="text-sm text-muted-foreground mt-1">Use the search filters to find matching courses</p>
       </div>
     );
   }
@@ -121,49 +138,49 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
         <p className="text-sm text-muted-foreground">{results.length} courses found</p>
       </div>
 
-      <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableHead className="cursor-pointer select-none" onClick={() => toggleSort('university')}>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead className="cursor-pointer select-none text-xs font-medium text-muted-foreground" onClick={() => toggleSort('university')}>
                 University <SortIcon field="university" />
               </TableHead>
-              <TableHead className="cursor-pointer select-none" onClick={() => toggleSort('name')}>
+              <TableHead className="cursor-pointer select-none text-xs font-medium text-muted-foreground" onClick={() => toggleSort('name')}>
                 Course <SortIcon field="name" />
               </TableHead>
-              <TableHead>Country</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead className="cursor-pointer select-none" onClick={() => toggleSort('tuition_fees')}>
+              <TableHead className="text-xs font-medium text-muted-foreground">Country</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">Duration</TableHead>
+              <TableHead className="cursor-pointer select-none text-xs font-medium text-muted-foreground" onClick={() => toggleSort('tuition_fees')}>
                 Fees <SortIcon field="tuition_fees" />
               </TableHead>
-              <TableHead>Intake</TableHead>
-              <TableHead className="cursor-pointer select-none text-center" onClick={() => toggleSort('matchScore')}>
+              <TableHead className="text-xs font-medium text-muted-foreground">Intake</TableHead>
+              <TableHead className="cursor-pointer select-none text-center text-xs font-medium text-muted-foreground" onClick={() => toggleSort('matchScore')}>
                 Match <SortIcon field="matchScore" />
               </TableHead>
-              <TableHead className="text-center">Status</TableHead>
-              <TableHead className="w-20 text-center">Actions</TableHead>
+              <TableHead className="text-center text-xs font-medium text-muted-foreground">Status</TableHead>
+              <TableHead className="w-20 text-center text-xs font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginated.map(result => (
-              <TableRow key={result.course.id} className="transition-colors hover:bg-muted/30">
-                <TableCell className="font-medium">{result.course.university.name}</TableCell>
+              <TableRow key={result.course.id} className="transition-colors hover:bg-muted/20">
+                <TableCell className="text-sm font-medium">{result.course.university.name}</TableCell>
                 <TableCell>
                   <button
-                    className="text-left text-primary hover:underline font-medium"
+                    className="text-left text-sm text-primary hover:underline font-medium"
                     onClick={() => navigate(`/course/${result.course.id}`)}
                   >
                     {result.course.name}
                   </button>
                 </TableCell>
-                <TableCell>{result.course.university.country}</TableCell>
-                <TableCell>{result.course.duration}</TableCell>
-                <TableCell className="whitespace-nowrap">
+                <TableCell className="text-sm">{result.course.university.country}</TableCell>
+                <TableCell className="text-sm">{result.course.duration}</TableCell>
+                <TableCell className="text-sm whitespace-nowrap">
                   {result.course.currency} {result.course.tuition_fees.toLocaleString()}
                 </TableCell>
                 <TableCell>
                   {result.course.intakes.map(i => (
-                    <span key={`${i.intake_name}-${i.year}`} className="block text-xs">
+                    <span key={`${i.intake_name}-${i.year}`} className="block text-xs text-muted-foreground">
                       {i.intake_name} {i.year}
                     </span>
                   ))}
@@ -171,7 +188,7 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
                 <TableCell>
                   <div className="flex flex-col items-center gap-1">
                     <span className="text-sm font-semibold">{result.matchScore}%</span>
-                    <Progress value={result.matchScore} className={`h-1.5 w-14 ${matchColor(result.matchScore)}`} />
+                    <Progress value={result.matchScore} className={`h-1 w-14 ${matchColor(result.matchScore)}`} />
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
@@ -179,7 +196,7 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
                     <TooltipTrigger asChild>
                       <span className="inline-flex items-center gap-1">
                         {statusBadge(result.eligibilityStatus)}
-                        <Info className="h-3 w-3 text-muted-foreground" />
+                        <Info className="h-3 w-3 text-muted-foreground/50" />
                       </span>
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
@@ -188,11 +205,11 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
                   </Tooltip>
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center justify-center gap-1">
+                  <div className="flex items-center justify-center gap-0.5">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
+                      className="h-8 w-8 text-muted-foreground hover:text-foreground"
                       onClick={() => navigate(`/course/${result.course.id}`)}
                     >
                       <Eye className="h-4 w-4" />
@@ -209,7 +226,7 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
                       ) : savedCourseIds.has(result.course.id) ? (
                         <BookmarkCheck className="h-4 w-4 text-primary" />
                       ) : (
-                        <BookmarkPlus className="h-4 w-4" />
+                        <BookmarkPlus className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                       )}
                     </Button>
                   </div>
@@ -225,7 +242,7 @@ export function ResultsTable({ results, savedCourseIds, onCourseSaved }: Results
           <Button variant="outline" size="sm" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
             Previous
           </Button>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             Page {page + 1} of {totalPages}
           </span>
           <Button variant="outline" size="sm" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>

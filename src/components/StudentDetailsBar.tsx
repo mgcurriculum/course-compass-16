@@ -35,7 +35,6 @@ export function StudentDetailsBar() {
   const [loading, setLoading] = useState(false);
   const [lookingUp, setLookingUp] = useState(false);
 
-  // Search existing students
   const [contacts, setContacts] = useState<StudentContact[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -129,14 +128,17 @@ export function StudentDetailsBar() {
 
   if (activeContact && !open) {
     return (
-      <Card className="border-primary/20 bg-primary/5">
+      <Card className="border-primary/15 bg-primary/[0.03]">
         <CardContent className="flex items-center gap-3 py-3 px-4">
-          <UserCheck className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">Student:</span>
-          <Badge variant="secondary">{activeContact.student_name}</Badge>
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <UserCheck className="h-3.5 w-3.5 text-primary" />
+          </div>
+          <span className="text-sm font-medium text-foreground">{activeContact.student_name}</span>
           <span className="text-xs text-muted-foreground">{activeContact.mobile}</span>
-          <span className="text-xs text-muted-foreground">{activeContact.email}</span>
-          <Button variant="outline" size="sm" className="ml-auto" onClick={handleChange}>Change</Button>
+          <span className="text-xs text-muted-foreground hidden sm:inline">{activeContact.email}</span>
+          <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-foreground" onClick={handleChange}>
+            Change
+          </Button>
         </CardContent>
       </Card>
     );
@@ -144,19 +146,19 @@ export function StudentDetailsBar() {
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <Card>
+      <Card className="border-border/50">
         <CollapsibleTrigger asChild>
-          <div className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-muted/50 transition-colors">
+          <div className="flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-muted/30 transition-colors">
             <div className="flex items-center gap-2">
               <UserPlus className="h-4 w-4 text-primary" />
               <span className="font-medium text-sm">Student Details</span>
             </div>
-            {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <CardContent className="pt-0 pb-4 px-4 space-y-4">
-            {/* Search existing student */}
+          <CardContent className="pt-0 pb-5 px-5 space-y-4">
+            {/* Search existing */}
             {contacts.length > 0 && (
               <div className="relative">
                 <Label className="text-xs text-muted-foreground mb-1.5 block">Search existing student</Label>
@@ -172,11 +174,11 @@ export function StudentDetailsBar() {
                   />
                 </div>
                 {showDropdown && filtered.length > 0 && (
-                  <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-lg max-h-48 overflow-y-auto">
+                  <div className="absolute z-50 mt-1 w-full rounded-lg border bg-popover shadow-lg max-h-48 overflow-y-auto">
                     {filtered.map(c => (
                       <button
                         key={c.id}
-                        className="w-full text-left px-3 py-2 hover:bg-accent text-sm flex items-center justify-between gap-2 transition-colors"
+                        className="w-full text-left px-3 py-2.5 hover:bg-muted/50 text-sm flex items-center justify-between gap-2 transition-colors"
                         onMouseDown={() => selectExisting(c)}
                       >
                         <span className="font-medium truncate">{c.student_name}</span>
@@ -188,19 +190,18 @@ export function StudentDetailsBar() {
               </div>
             )}
 
-            {/* Divider */}
             {contacts.length > 0 && (
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-border" />
+                <div className="flex-1 h-px bg-border/60" />
                 <span className="text-xs text-muted-foreground">or enter new details</span>
-                <div className="flex-1 h-px bg-border" />
+                <div className="flex-1 h-px bg-border/60" />
               </div>
             )}
 
-            {/* Manual entry fields */}
+            {/* Manual entry */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="sd-mobile" className="text-xs">Mobile *</Label>
+                <Label htmlFor="sd-mobile" className="text-xs text-muted-foreground">Mobile *</Label>
                 <Input
                   id="sd-mobile"
                   type="tel"
@@ -212,15 +213,15 @@ export function StudentDetailsBar() {
                 {lookingUp && <p className="text-xs text-muted-foreground">Looking up...</p>}
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sd-name" className="text-xs">Student Name *</Label>
+                <Label htmlFor="sd-name" className="text-xs text-muted-foreground">Student Name *</Label>
                 <Input id="sd-name" placeholder="Full name" value={studentName} onChange={e => setStudentName(e.target.value)} />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sd-email" className="text-xs">Email *</Label>
+                <Label htmlFor="sd-email" className="text-xs text-muted-foreground">Email *</Label>
                 <Input id="sd-email" type="email" placeholder="student@email.com" value={email} onChange={e => setEmail(e.target.value)} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs">Date of Birth</Label>
+                <Label className="text-xs text-muted-foreground">Date of Birth</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className={cn('w-full justify-start text-left font-normal h-10', !dob && 'text-muted-foreground')}>
@@ -242,11 +243,11 @@ export function StudentDetailsBar() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button onClick={handleSetStudent} disabled={loading} size="sm">
+              <Button onClick={handleSetStudent} disabled={loading} size="sm" className="shadow-sm">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Set Student
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
+              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setOpen(false)}>
                 Skip for Now
               </Button>
             </div>

@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { StudentContactDialog } from '@/components/StudentContactDialog';
-import { ArrowLeft, BookmarkPlus, Download, ExternalLink, GraduationCap, MapPin, Calendar, Clock, DollarSign, Loader2 } from 'lucide-react';
+import { ArrowLeft, BookmarkPlus, Download, ExternalLink, Globe, MapPin, Calendar, Clock, DollarSign, Loader2 } from 'lucide-react';
 import type { MatchResult, CourseWithDetails } from '@/lib/matching-engine';
 
 export default function CourseDetail() {
@@ -71,7 +71,7 @@ export default function CourseDetail() {
   if (!course) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4">
-        <p className="text-lg text-muted-foreground">Course not found</p>
+        <p className="text-base text-muted-foreground">Course not found</p>
         <Button variant="outline" onClick={() => navigate('/')}>Go Back</Button>
       </div>
     );
@@ -89,34 +89,36 @@ export default function CourseDetail() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="flex h-14 items-center gap-3 border-b bg-card px-4">
+      <header className="flex h-14 items-center gap-3 border-b border-border/60 bg-card/80 backdrop-blur-sm px-4">
         <SidebarTrigger />
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-lg font-semibold tracking-tight truncate">{course.name}</h1>
+        <h1 className="text-base font-semibold tracking-tight truncate">{course.name}</h1>
       </header>
 
       <div className="flex-1 overflow-y-auto p-6">
         <div className="mx-auto max-w-4xl space-y-6">
           {/* Hero */}
-          <div className="rounded-xl bg-gradient-to-r from-primary/10 to-primary/5 p-6">
+          <div className="rounded-xl bg-gradient-to-br from-primary/8 to-primary/3 border border-primary/10 p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">{course.name}</h2>
-                <p className="mt-1 flex items-center gap-2 text-muted-foreground">
-                  <GraduationCap className="h-4 w-4" />
+                <p className="mt-1.5 flex items-center gap-2 text-muted-foreground">
+                  <Globe className="h-4 w-4" />
                   {uni.name}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Badge variant="secondary">{course.study_level}</Badge>
-                  <Badge variant="outline">{course.domain}</Badge>
-                  {course.course_type && <Badge variant="outline">{course.course_type}</Badge>}
-                  {uni.partner_status && <Badge className="bg-primary/20 text-primary">Partner</Badge>}
+                  <Badge variant="secondary" className="font-normal">{course.study_level}</Badge>
+                  <Badge variant="outline" className="font-normal">{course.domain}</Badge>
+                  {course.course_type && <Badge variant="outline" className="font-normal">{course.course_type}</Badge>}
+                  {uni.partner_status && (
+                    <Badge className="bg-primary/10 text-primary border border-primary/20 shadow-none font-normal">Partner</Badge>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button disabled={saving} onClick={async () => {
+                <Button disabled={saving} className="shadow-sm" onClick={async () => {
                   if (activeContact && user && course) {
                     setSaving(true);
                     try {
@@ -150,41 +152,38 @@ export default function CourseDetail() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Overview */}
-            <Card className="rounded-xl shadow-sm">
-              <CardHeader><CardTitle className="text-base">Overview</CardTitle></CardHeader>
+            <Card className="border-border/50 shadow-sm">
+              <CardHeader className="pb-3"><CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Overview</CardTitle></CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /> Duration: {course.duration}</div>
                 <div className="flex items-center gap-2"><DollarSign className="h-4 w-4 text-muted-foreground" /> Fees: {course.currency} {course.tuition_fees.toLocaleString()}</div>
-                {course.degree_type && <div className="flex items-center gap-2"><GraduationCap className="h-4 w-4 text-muted-foreground" /> Degree: {course.degree_type}</div>}
+                {course.degree_type && <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-muted-foreground" /> Degree: {course.degree_type}</div>}
                 {course.description && (
                   <>
                     <Separator />
-                    <p className="text-muted-foreground">{course.description}</p>
+                    <p className="text-muted-foreground leading-relaxed">{course.description}</p>
                   </>
                 )}
               </CardContent>
             </Card>
 
-            {/* University */}
-            <Card className="rounded-xl shadow-sm">
-              <CardHeader><CardTitle className="text-base">University</CardTitle></CardHeader>
+            <Card className="border-border/50 shadow-sm">
+              <CardHeader className="pb-3"><CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">University</CardTitle></CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <p className="font-medium">{uni.name}</p>
                 <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-muted-foreground" /> {uni.city}, {uni.country}</div>
-                {uni.ranking && <p>Ranking: #{uni.ranking}</p>}
+                {uni.ranking && <p className="text-muted-foreground">Ranking: #{uni.ranking}</p>}
                 {uni.website && (
-                  <a href={uni.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
-                    <ExternalLink className="h-3 w-3" /> Visit Website
+                  <a href={uni.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-primary hover:underline text-sm">
+                    <ExternalLink className="h-3.5 w-3.5" /> Visit Website
                   </a>
                 )}
               </CardContent>
             </Card>
 
-            {/* Eligibility */}
             {elig && (
-              <Card className="rounded-xl shadow-sm">
-                <CardHeader><CardTitle className="text-base">Eligibility Requirements</CardTitle></CardHeader>
+              <Card className="border-border/50 shadow-sm">
+                <CardHeader className="pb-3"><CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Eligibility</CardTitle></CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   {elig.min_10th_marks != null && <p>10th Marks: ≥ {elig.min_10th_marks}%</p>}
                   {elig.min_12th_marks != null && <p>12th Marks: ≥ {elig.min_12th_marks}%</p>}
@@ -197,13 +196,12 @@ export default function CourseDetail() {
               </Card>
             )}
 
-            {/* Intakes */}
             {course.intakes.length > 0 && (
-              <Card className="rounded-xl shadow-sm">
-                <CardHeader><CardTitle className="text-base">Intakes & Deadlines</CardTitle></CardHeader>
+              <Card className="border-border/50 shadow-sm">
+                <CardHeader className="pb-3"><CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Intakes & Deadlines</CardTitle></CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   {course.intakes.map((intake, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-lg border px-3 py-2">
+                    <div key={i} className="flex items-center justify-between rounded-lg border border-border/50 px-3 py-2.5">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                         <span>{intake.intake_name} {intake.year}</span>
