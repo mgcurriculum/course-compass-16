@@ -151,7 +151,7 @@ export function StudentDetailsBar() {
           <div className="flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-muted/30 transition-colors">
             <div className="flex items-center gap-2">
               <UserPlus className="h-4 w-4 text-primary" />
-              <span className="font-medium text-sm">Student Details</span>
+              <span className="font-semibold text-base">Student Details</span>
             </div>
             {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
           </div>
