@@ -24,6 +24,7 @@ interface StudentContactDialogProps {
 export function StudentContactDialog({ open, onOpenChange, result, onSaved }: StudentContactDialogProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { setActiveContact } = useStudentContact();
   const [studentName, setStudentName] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
