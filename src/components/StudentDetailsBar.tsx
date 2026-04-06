@@ -217,7 +217,7 @@ export function StudentDetailsBar() {
                 <Input id="sd-name" placeholder="Full name" value={studentName} onChange={e => setStudentName(e.target.value)} />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="sd-email" className="text-xs text-muted-foreground">Email *</Label>
+                <Label htmlFor="sd-email" className="text-sm text-muted-foreground">Email *</Label>
                 <Input id="sd-email" type="email" placeholder="student@email.com" value={email} onChange={e => setEmail(e.target.value)} />
               </div>
               <div className="space-y-1.5">
