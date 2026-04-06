@@ -7,6 +7,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CalendarIcon, ChevronDown, ChevronUp, Loader2, Search, UserCheck, UserPlus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -15,12 +16,26 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useStudentContact } from '@/contexts/StudentContactContext';
 
+const QUALIFICATIONS = ['10th', '12th', 'Diploma', "Bachelor's", "Master's"];
+const COUNTRIES = ['United Kingdom', 'United States', 'Canada', 'Australia', 'Germany'];
+const DOMAINS = [
+  'Computer Science', 'Engineering', 'Business', 'Data Science', 'Economics',
+  'Health Sciences', 'Biology', 'Physics', 'Psychology', 'Education',
+  'Political Science', 'Architecture', 'Environmental Science',
+];
+
 interface StudentContact {
   id: string;
   student_name: string;
   mobile: string;
   email: string;
   dob: string | null;
+  educational_qualification: string | null;
+  graduated_year: number | null;
+  ielts_score: number | null;
+  work_experience: number | null;
+  preferred_countries: string[] | null;
+  preferred_domains: string[] | null;
 }
 
 export function StudentDetailsBar() {
@@ -32,6 +47,12 @@ export function StudentDetailsBar() {
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState<Date>();
+  const [educationalQualification, setEducationalQualification] = useState('');
+  const [graduatedYear, setGraduatedYear] = useState('');
+  const [ieltsScore, setIeltsScore] = useState('');
+  const [workExperience, setWorkExperience] = useState('');
+  const [preferredCountries, setPreferredCountries] = useState<string[]>([]);
+  const [preferredDomains, setPreferredDomains] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [lookingUp, setLookingUp] = useState(false);
 
@@ -43,7 +64,7 @@ export function StudentDetailsBar() {
     if (!user || !open) return;
     supabase
       .from('student_contacts')
-      .select('id, student_name, mobile, email, dob')
+      .select('id, student_name, mobile, email, dob, educational_qualification, graduated_year, ielts_score, work_experience, preferred_countries, preferred_domains')
       .eq('user_id', user.id)
       .order('updated_at', { ascending: false })
       .then(({ data }) => {
@@ -60,7 +81,15 @@ export function StudentDetailsBar() {
   }, [contacts, searchQuery]);
 
   const selectExisting = (c: StudentContact) => {
-    setActiveContact({ id: c.id, student_name: c.student_name, mobile: c.mobile, email: c.email });
+    setActiveContact({
+      id: c.id, student_name: c.student_name, mobile: c.mobile, email: c.email,
+      educational_qualification: c.educational_qualification || undefined,
+      graduated_year: c.graduated_year || undefined,
+      ielts_score: c.ielts_score || undefined,
+      work_experience: c.work_experience || undefined,
+      preferred_countries: c.preferred_countries || undefined,
+      preferred_domains: c.preferred_domains || undefined,
+    });
     setSearchQuery('');
     setShowDropdown(false);
     setOpen(false);
@@ -79,9 +108,20 @@ export function StudentDetailsBar() {
       setStudentName(data.student_name);
       setEmail(data.email);
       if (data.dob) setDob(new Date(data.dob));
+      setEducationalQualification(data.educational_qualification || '');
+      setGraduatedYear(data.graduated_year?.toString() || '');
+      setIeltsScore(data.ielts_score?.toString() || '');
+      setWorkExperience(data.work_experience?.toString() || '');
+      setPreferredCountries(data.preferred_countries || []);
+      setPreferredDomains(data.preferred_domains || []);
     }
     setLookingUp(false);
   };
+
+  const toggleCountry = (c: string) =>
+    setPreferredCountries(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+  const toggleDomain = (d: string) =>
+    setPreferredDomains(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
 
   const handleSetStudent = async () => {
     if (!user) return;
@@ -100,13 +140,30 @@ export function StudentDetailsBar() {
             mobile: mobile.trim(),
             email: email.trim(),
             dob: dob ? format(dob, 'yyyy-MM-dd') : null,
+            educational_qualification: educationalQualification || null,
+            graduated_year: graduatedYear ? Number(graduatedYear) : null,
+            ielts_score: ieltsScore ? Number(ieltsScore) : null,
+            work_experience: workExperience ? Number(workExperience) : 0,
+            preferred_countries: preferredCountries.length ? preferredCountries : [],
+            preferred_domains: preferredDomains.length ? preferredDomains : [],
           },
           { onConflict: 'mobile' }
         )
         .select('id')
         .single();
       if (error) throw error;
-      setActiveContact({ id: contact.id, student_name: studentName.trim(), mobile: mobile.trim(), email: email.trim() });
+      setActiveContact({
+        id: contact.id,
+        student_name: studentName.trim(),
+        mobile: mobile.trim(),
+        email: email.trim(),
+        educational_qualification: educationalQualification || undefined,
+        graduated_year: graduatedYear ? Number(graduatedYear) : undefined,
+        ielts_score: ieltsScore ? Number(ieltsScore) : undefined,
+        work_experience: workExperience ? Number(workExperience) : undefined,
+        preferred_countries: preferredCountries.length ? preferredCountries : undefined,
+        preferred_domains: preferredDomains.length ? preferredDomains : undefined,
+      });
       setOpen(false);
       toast({ title: 'Student set: ' + studentName.trim() });
     } catch (err: any) {
@@ -122,6 +179,12 @@ export function StudentDetailsBar() {
     setMobile('');
     setEmail('');
     setDob(undefined);
+    setEducationalQualification('');
+    setGraduatedYear('');
+    setIeltsScore('');
+    setWorkExperience('');
+    setPreferredCountries([]);
+    setPreferredDomains([]);
     setSearchQuery('');
     setOpen(true);
   };
@@ -129,13 +192,19 @@ export function StudentDetailsBar() {
   if (activeContact && !open) {
     return (
       <Card className="border-primary/15 bg-primary/[0.03]">
-        <CardContent className="flex items-center gap-3 py-3 px-4">
+        <CardContent className="flex items-center gap-3 py-3 px-4 flex-wrap">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
             <UserCheck className="h-3.5 w-3.5 text-primary" />
           </div>
           <span className="text-base font-medium text-foreground">{activeContact.student_name}</span>
           <span className="text-sm text-muted-foreground">{activeContact.mobile}</span>
           <span className="text-sm text-muted-foreground hidden sm:inline">{activeContact.email}</span>
+          {activeContact.educational_qualification && (
+            <Badge variant="secondary" className="text-sm font-normal">{activeContact.educational_qualification}</Badge>
+          )}
+          {activeContact.ielts_score && (
+            <Badge variant="outline" className="text-sm font-normal">IELTS {activeContact.ielts_score}</Badge>
+          )}
           <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-foreground" onClick={handleChange}>
             Change
           </Button>
@@ -198,7 +267,7 @@ export function StudentDetailsBar() {
               </div>
             )}
 
-            {/* Manual entry */}
+            {/* Row 1: Basic info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="sd-mobile" className="text-sm text-muted-foreground">Mobile *</Label>
@@ -242,6 +311,68 @@ export function StudentDetailsBar() {
                 </Popover>
               </div>
             </div>
+
+            {/* Row 2: Academic info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-sm text-muted-foreground">Educational Qualification</Label>
+                <Select value={educationalQualification} onValueChange={setEducationalQualification}>
+                  <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
+                  <SelectContent>
+                    {QUALIFICATIONS.map(q => (
+                      <SelectItem key={q} value={q}>{q}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm text-muted-foreground">Graduated Year</Label>
+                <Input type="number" min="1990" max="2030" placeholder="2023" value={graduatedYear} onChange={e => setGraduatedYear(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm text-muted-foreground">IELTS Score</Label>
+                <Input type="number" min="0" max="9" step="0.5" placeholder="7.0" value={ieltsScore} onChange={e => setIeltsScore(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm text-muted-foreground">Work Experience (yrs)</Label>
+                <Input type="number" min="0" placeholder="2" value={workExperience} onChange={e => setWorkExperience(e.target.value)} />
+              </div>
+            </div>
+
+            {/* Row 3: Preferred Countries */}
+            <div className="space-y-1.5">
+              <Label className="text-sm text-muted-foreground">Preferred Countries</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {COUNTRIES.map(c => (
+                  <Badge
+                    key={c}
+                    variant={preferredCountries.includes(c) ? 'default' : 'outline'}
+                    className="cursor-pointer text-sm font-normal transition-all hover:shadow-sm"
+                    onClick={() => toggleCountry(c)}
+                  >
+                    {c}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            {/* Row 4: Preferred Domains */}
+            <div className="space-y-1.5">
+              <Label className="text-sm text-muted-foreground">Preferred Domains</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {DOMAINS.map(d => (
+                  <Badge
+                    key={d}
+                    variant={preferredDomains.includes(d) ? 'default' : 'outline'}
+                    className="cursor-pointer text-sm font-normal transition-all hover:shadow-sm"
+                    onClick={() => toggleDomain(d)}
+                  >
+                    {d}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
             <div className="flex items-center gap-3">
               <Button onClick={handleSetStudent} disabled={loading} size="sm" className="shadow-sm">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
