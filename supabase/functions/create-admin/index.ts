@@ -39,8 +39,24 @@ Deno.serve(async (req) => {
     await supabaseAdmin.from("user_roles").upsert({ user_id: counselorId, role: "counselor" });
   }
 
+  // Create jaseel admin user
+  const { data: jaseelUser, error: jaseelError } = await supabaseAdmin.auth.admin.createUser({
+    email: "jaseel2022@gmail.com",
+    password: "Admin@12345",
+    email_confirm: true,
+  });
+
+  if (jaseelError && !jaseelError.message.includes("already")) {
+    return new Response(JSON.stringify({ error: jaseelError.message }), { status: 400 });
+  }
+
+  const jaseelId = jaseelUser?.user?.id;
+  if (jaseelId) {
+    await supabaseAdmin.from("user_roles").upsert({ user_id: jaseelId, role: "admin" });
+  }
+
   return new Response(
-    JSON.stringify({ success: true, admin: adminId, counselor: counselorId }),
+    JSON.stringify({ success: true, admin: adminId, counselor: counselorId, jaseelAdmin: jaseelId }),
     { headers: { "Content-Type": "application/json" } }
   );
 });
