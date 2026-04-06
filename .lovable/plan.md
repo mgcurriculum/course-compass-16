@@ -1,45 +1,57 @@
 
 
-# Save Student Profile & Preferences with Contact
+# Share Saved Courses via WhatsApp & Email
 
 ## Summary
-Add educational qualification, graduated year, IELTS score, work experience, preferred countries, and preferred domains fields to the `student_contacts` table. When a counselor sets a student, these preferences are saved alongside the contact info and auto-loaded when selecting an existing student.
+Add WhatsApp and Email share buttons to both the **Student Profile detail view** (Students page) and the **Shortlisted Courses page**. These compose a formatted message with the student's profile details and their saved course list, then open WhatsApp or the user's email client.
 
-## Database Changes
+## How It Works
 
-Add new columns to `student_contacts`:
+### Message Format
+A formatted text block containing:
+- **Student Info**: Name, Mobile, Email, DOB
+- **Course List**: Each course with University, Course Name, Country, Duration, Fees, Match %, Status
 
-```sql
-ALTER TABLE student_contacts
-  ADD COLUMN educational_qualification text,
-  ADD COLUMN graduated_year integer,
-  ADD COLUMN ielts_score numeric,
-  ADD COLUMN work_experience integer DEFAULT 0,
-  ADD COLUMN preferred_countries text[] DEFAULT '{}',
-  ADD COLUMN preferred_domains text[] DEFAULT '{}';
+Example:
+```text
+*Edroots International — Course Recommendations*
+
+*Student:* John Doe
+*Mobile:* 9876543210
+*Email:* john@email.com
+
+*Recommended Courses:*
+1. University of London — MSc Computer Science
+   UK | 2 years | GBP 18,000 | Match: 85% | Eligible
+
+2. University of Toronto — MEng Software Engineering
+   Canada | 2 years | CAD 25,000 | Match: 78% | Borderline
 ```
 
-No new tables needed — extends the existing `student_contacts` table which already has RLS.
+### WhatsApp
+- Opens `https://wa.me/?text={encodedMessage}` in a new tab
+- Uses WhatsApp-compatible formatting (`*bold*` for headers)
+
+### Email
+- Opens `mailto:?subject=...&body={encodedMessage}` 
+- Pre-fills the student's email in the `to` field if available
 
 ## UI Changes
 
-### `src/components/StudentDetailsBar.tsx`
-- Add new form fields below the existing Name/Mobile/Email/DOB row:
-  - **Row 2**: Educational Qualification (select: 10th, 12th, Diploma, Bachelor's, Master's), Graduated Year (number input), IELTS Score (number input), Work Experience in years (number input)
-  - **Row 3**: Preferred Countries (badge toggles, same list as SearchFilters), Preferred Domains (badge toggles, same list as SearchFilters)
-- Save all new fields in the `upsert` call to `student_contacts`
-- Auto-fill these fields when looking up by mobile or selecting existing student
-- Show key preferences in the collapsed active contact summary (e.g. qualification + IELTS)
+### `src/pages/Students.tsx` — Student detail view
+- Add "Share via WhatsApp" and "Share via Email" buttons next to the student info card
+- Build the message from `selectedContact` + `savedCourses` state
 
-### `src/contexts/StudentContactContext.tsx`
-- Extend `ActiveContact` interface to include the new fields so they're available app-wide
+### `src/pages/Shortlisted.tsx` — Shortlisted courses page
+- Add WhatsApp and Email share buttons in the header (next to Export CSV)
+- Needs to fetch the associated student contact info for the message header
+- Uses the active contact from context if available
 
-### `src/components/SearchFilters.tsx`
-- When an active contact has preferences set, auto-populate the matching search filter fields (IELTS, work exp, countries, domains) as defaults
+### Shared utility
+- Create a helper function `buildShareMessage(student, courses)` in a small utility to avoid duplication between the two pages
 
-## Files Modified
-- **Migration**: Add 6 columns to `student_contacts`
-- `src/components/StudentDetailsBar.tsx` — add preference fields, save/load logic
-- `src/contexts/StudentContactContext.tsx` — extend ActiveContact type
-- `src/components/SearchFilters.tsx` — auto-fill from active contact preferences
+## Files
+- **Create**: `src/lib/share-utils.ts` — `buildShareMessage`, `shareViaWhatsApp`, `shareViaEmail` helpers
+- **Modify**: `src/pages/Students.tsx` — add share buttons in student detail view
+- **Modify**: `src/pages/Shortlisted.tsx` — add share buttons in header
 
