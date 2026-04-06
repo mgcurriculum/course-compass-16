@@ -144,16 +144,17 @@ export default function Shortlisted() {
                   size="sm"
                   variant="outline"
                   className="shadow-sm text-green-600 border-green-200 hover:bg-green-50"
-                  onClick={() => {
+                  onClick={async () => {
                     const courses = items.map(i => ({
                       ...i.course,
                       match_score: i.match_score,
                       eligibility_status: i.eligibility_status,
                     }));
-                    shareViaWhatsApp(activeContact, courses);
+                    await copyForWhatsApp(activeContact, courses);
+                    sonnerToast.success('Copied to clipboard — paste in WhatsApp');
                   }}
                 >
-                  <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> WhatsApp
+                  <Copy className="mr-1.5 h-3.5 w-3.5" /> Copy for WhatsApp
                 </Button>
                 <Button
                   size="sm"

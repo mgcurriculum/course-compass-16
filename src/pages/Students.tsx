@@ -116,12 +116,15 @@ export default function Students() {
                     size="sm"
                     variant="outline"
                     className="text-green-600 border-green-200 hover:bg-green-50"
-                    onClick={() => shareViaWhatsApp(
-                      selectedContact,
-                      savedCourses.map(sc => ({ ...sc.course, match_score: sc.match_score, eligibility_status: sc.eligibility_status }))
-                    )}
+                    onClick={async () => {
+                      await copyForWhatsApp(
+                        selectedContact,
+                        savedCourses.map(sc => ({ ...sc.course, match_score: sc.match_score, eligibility_status: sc.eligibility_status }))
+                      );
+                      toast.success('Copied to clipboard — paste in WhatsApp');
+                    }}
                   >
-                    <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
+                    <Copy className="mr-1.5 h-4 w-4" /> Copy for WhatsApp
                   </Button>
                   <Button
                     size="sm"
